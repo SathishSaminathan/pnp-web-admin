@@ -32,14 +32,14 @@ const EarningsPage = () => {
   }, []);
 
   const cards = [
-    { label: 'Today', value: earnings?.today, color: '#3b82f6', icon: <CalendarOutlined />, hint: 'Day' },
-    { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: '7d' },
-    { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: '30d' },
-    { label: 'Lifetime', value: earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'All' },
+    { label: 'Today', value: earnings?.today, color: '#3b82f6', icon: <CalendarOutlined />, hint: '24h' },
+    { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: '7 days' },
+    { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: '30 days' },
+    { label: 'Lifetime', value: earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'All time' },
     { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Revenue' },
-    { label: 'Platform fees', value: earnings?.fees, color: '#f59e0b', icon: <PercentageOutlined />, hint: 'Cut' },
-    { label: 'Net', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'Payout' },
-    { label: 'Pending settlement', value: earnings?.pending, color: '#f97316', icon: <ClockCircleOutlined />, hint: 'Hold' },
+    { label: 'Platform fees', value: earnings?.fees, color: '#f59e0b', icon: <PercentageOutlined />, hint: 'Commission' },
+    { label: 'Net', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'To hosts' },
+    { label: 'Pending settlement', value: earnings?.pending, color: '#f97316', icon: <ClockCircleOutlined />, hint: 'Unpaid' },
   ];
 
   return (

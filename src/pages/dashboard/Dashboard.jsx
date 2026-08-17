@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag } from 'antd';
 import { UserOutlined, ShopOutlined, DollarCircleOutlined, FileTextOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import DataTable from '../../components/common/DataTable';
+import StatusPill from '../../components/common/StatusPill';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -43,20 +44,38 @@ const Dashboard = () => {
           <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Recent history</h3>
           <button className="text-sm text-blue-600" onClick={() => navigate('/history')}>View all</button>
         </div>
-        <Table
+        <DataTable
+          wrapped={false}
           rowKey="id"
           loading={loading}
           pagination={false}
           dataSource={data?.recentBookings || []}
           columns={[
-            { title: 'Visit', dataIndex: 'toiletName' },
-            { title: 'Date', dataIndex: 'date' },
-            { title: 'Time', dataIndex: 'time' },
-            { title: 'Amount', dataIndex: 'amount', render: value => inr(value) },
+            {
+              title: 'Visit',
+              dataIndex: 'toiletName',
+              render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+            },
+            {
+              title: 'Date',
+              dataIndex: 'date',
+              render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+            },
+            {
+              title: 'Time',
+              dataIndex: 'time',
+              render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+            },
+            {
+              title: 'Amount',
+              dataIndex: 'amount',
+              align: 'right',
+              render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+            },
             {
               title: 'Status',
               dataIndex: 'bookingStatus',
-              render: status => <Tag color={status === 'COMPLETED' ? 'green' : status === 'CANCELLED' ? 'red' : 'blue'}>{status}</Tag>,
+              render: status => <StatusPill value={status} />,
             },
           ]}
         />

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import DataTable from '../../components/common/DataTable';
+import StatusPill from '../../components/common/StatusPill';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -18,27 +19,41 @@ const ListingsList = () => {
   return (
     <div>
       <PageHeader title="Listings" description="All restrooms published in the app." />
-      <Table
+      <DataTable
         rowKey="id"
         loading={loading}
         dataSource={items}
-        pagination={{ pageSize: 10 }}
+        scroll={{ x: 920 }}
         columns={[
-          { title: 'Name', dataIndex: 'name' },
+          {
+            title: 'Name',
+            dataIndex: 'name',
+            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+          },
           { title: 'Owner', render: row => row.owner?.name || '—' },
-          { title: 'City', render: row => row.address?.city || '—' },
-          { title: 'Price', dataIndex: 'basePrice', render: inr },
-          { title: 'Rating', dataIndex: 'rating' },
-          { title: 'Bookings', dataIndex: 'bookingCount' },
+          {
+            title: 'City',
+            render: row => <span className="pnp-cell-muted">{row.address?.city || '—'}</span>,
+          },
+          {
+            title: 'Price',
+            dataIndex: 'basePrice',
+            align: 'right',
+            render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+          },
+          { title: 'Rating', dataIndex: 'rating', render: value => value ?? '—' },
+          { title: 'Bookings', dataIndex: 'bookingCount', render: value => value ?? 0 },
           {
             title: 'Availability',
             dataIndex: 'availability',
-            render: value => <Tag color={value === 'AVAILABLE' ? 'green' : 'orange'}>{value}</Tag>,
+            render: value => <StatusPill value={value} />,
           },
           {
             title: 'Verified',
             dataIndex: 'verified',
-            render: value => <Tag color={value ? 'blue' : 'default'}>{value ? 'Yes' : 'No'}</Tag>,
+            render: value => (
+              <StatusPill value={value ? 'Yes' : 'No'} tone={value ? 'info' : 'muted'} />
+            ),
           },
         ]}
       />

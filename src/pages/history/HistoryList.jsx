@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Table, Tag } from 'antd';
+import { Select } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import DataTable from '../../components/common/DataTable';
+import StatusPill from '../../components/common/StatusPill';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -36,27 +38,50 @@ const HistoryList = () => {
         }}
         options={['UPCOMING', 'ACTIVE', 'COMPLETED', 'CANCELLED'].map(value => ({ label: value, value }))}
       />
-      <Table
+      <DataTable
         rowKey="id"
         loading={loading}
         dataSource={items}
-        pagination={{ pageSize: 10 }}
+        scroll={{ x: 960 }}
         columns={[
-          { title: 'Toilet', dataIndex: 'toiletName' },
-          { title: 'Customer', render: row => row.user?.name || row.userId },
-          { title: 'Phone', render: row => row.user?.phone || '—' },
-          { title: 'Date', dataIndex: 'date' },
-          { title: 'Time', dataIndex: 'time' },
-          { title: 'Amount', dataIndex: 'amount', render: inr },
+          {
+            title: 'Toilet',
+            dataIndex: 'toiletName',
+            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+          },
+          {
+            title: 'Customer',
+            render: row => row.user?.name || row.userId || '—',
+          },
+          {
+            title: 'Phone',
+            render: row => <span className="pnp-cell-muted">{row.user?.phone || '—'}</span>,
+          },
+          {
+            title: 'Date',
+            dataIndex: 'date',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
+          {
+            title: 'Time',
+            dataIndex: 'time',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
+          {
+            title: 'Amount',
+            dataIndex: 'amount',
+            align: 'right',
+            render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+          },
           {
             title: 'Payment',
             dataIndex: 'paymentStatus',
-            render: value => <Tag color={value === 'PAID' ? 'green' : 'orange'}>{value}</Tag>,
+            render: value => <StatusPill value={value} />,
           },
           {
             title: 'Status',
             dataIndex: 'bookingStatus',
-            render: value => <Tag>{value}</Tag>,
+            render: value => <StatusPill value={value} />,
           },
         ]}
       />

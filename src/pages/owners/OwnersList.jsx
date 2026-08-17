@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Table, Tag } from 'antd';
+import { Input, Tag } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import DataTable from '../../components/common/DataTable';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -33,28 +34,52 @@ const OwnersList = () => {
         onChange={e => setSearch(e.target.value)}
         onSearch={load}
       />
-      <Table
+      <DataTable
         rowKey="id"
         loading={loading}
         dataSource={items}
-        pagination={{ pageSize: 10 }}
+        scroll={{ x: 880 }}
         expandable={{
           expandedRowRender: owner => (
             <div className="text-sm">
-              {(owner.listings || []).map(item => (
-                <Tag key={item.id} className="mb-1">{item.name}</Tag>
-              ))}
+              {(owner.listings || []).length
+                ? (owner.listings || []).map(item => (
+                    <Tag key={item.id} className="mb-1">{item.name}</Tag>
+                  ))
+                : <span className="pnp-cell-muted">No listings</span>}
             </div>
           ),
         }}
         columns={[
-          { title: 'Owner', dataIndex: 'name' },
-          { title: 'Phone', dataIndex: 'phone' },
-          { title: 'City', dataIndex: 'city' },
+          {
+            title: 'Owner',
+            dataIndex: 'name',
+            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+          },
+          {
+            title: 'Phone',
+            dataIndex: 'phone',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
+          {
+            title: 'City',
+            dataIndex: 'city',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
           { title: 'Listings', dataIndex: 'listingCount' },
           { title: 'Host bookings', dataIndex: 'hostBookingCount' },
-          { title: 'Settled', dataIndex: 'settledAmount', render: inr },
-          { title: 'Pending', dataIndex: 'pendingAmount', render: inr },
+          {
+            title: 'Settled',
+            dataIndex: 'settledAmount',
+            align: 'right',
+            render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+          },
+          {
+            title: 'Pending',
+            dataIndex: 'pendingAmount',
+            align: 'right',
+            render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+          },
         ]}
       />
     </div>

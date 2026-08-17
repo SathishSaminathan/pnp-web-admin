@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Table, Tag } from 'antd';
+import { Input } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import DataTable from '../../components/common/DataTable';
+import StatusPill from '../../components/common/StatusPill';
 
 const UsersList = () => {
   const [items, setItems] = useState([]);
@@ -31,26 +33,42 @@ const UsersList = () => {
         onChange={e => setSearch(e.target.value)}
         onSearch={load}
       />
-      <Table
+      <DataTable
         rowKey="id"
         loading={loading}
         dataSource={items}
-        pagination={{ pageSize: 10 }}
+        scroll={{ x: 860 }}
         columns={[
-          { title: 'Name', dataIndex: 'name', render: value => value || '—' },
-          { title: 'Phone', dataIndex: 'phone' },
-          { title: 'City', dataIndex: 'city', render: value => value || '—' },
+          {
+            title: 'Name',
+            dataIndex: 'name',
+            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+          },
+          {
+            title: 'Phone',
+            dataIndex: 'phone',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
+          {
+            title: 'City',
+            dataIndex: 'city',
+            render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
+          },
           {
             title: 'Role',
             dataIndex: 'role',
-            render: role => <Tag color={role === 'owner' ? 'purple' : 'blue'}>{role}</Tag>,
+            render: role => (
+              <StatusPill value={role} tone={role === 'owner' ? 'purple' : 'info'} />
+            ),
           },
           { title: 'Visits', dataIndex: 'bookingCount' },
           { title: 'Listings', dataIndex: 'listingCount' },
           {
             title: 'Profile',
             dataIndex: 'profileCompleted',
-            render: done => <Tag color={done ? 'green' : 'orange'}>{done ? 'Complete' : 'Pending'}</Tag>,
+            render: done => (
+              <StatusPill value={done ? 'Complete' : 'Pending'} />
+            ),
           },
         ]}
       />

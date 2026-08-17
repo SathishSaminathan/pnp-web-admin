@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { DollarCircleOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  FundOutlined,
+  PercentageOutlined,
+  RiseOutlined,
+  TrophyOutlined,
+  WalletOutlined,
+} from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import StatCard from '../../components/common/StatCard';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
 
@@ -22,26 +32,29 @@ const EarningsPage = () => {
   }, []);
 
   const cards = [
-    { label: 'Today', value: earnings?.today },
-    { label: 'This week', value: earnings?.week },
-    { label: 'This month', value: earnings?.month },
-    { label: 'Lifetime', value: earnings?.total },
-    { label: 'Gross', value: earnings?.gross },
-    { label: 'Platform fees', value: earnings?.fees },
-    { label: 'Net', value: earnings?.net },
-    { label: 'Pending settlement', value: earnings?.pending },
+    { label: 'Today', value: earnings?.today, color: '#3b82f6', icon: <CalendarOutlined />, hint: 'Day' },
+    { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: '7d' },
+    { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: '30d' },
+    { label: 'Lifetime', value: earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'All' },
+    { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Revenue' },
+    { label: 'Platform fees', value: earnings?.fees, color: '#f59e0b', icon: <PercentageOutlined />, hint: 'Cut' },
+    { label: 'Net', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'Payout' },
+    { label: 'Pending settlement', value: earnings?.pending, color: '#f97316', icon: <ClockCircleOutlined />, hint: 'Hold' },
   ];
 
   return (
     <div>
       <PageHeader title="Earnings" description="Platform revenue and host settlement transactions." />
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {cards.map(card => (
-          <div key={card.label} className="rounded-2xl p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-            <DollarCircleOutlined className="mb-2 text-emerald-500" />
-            <div className="text-xl font-extrabold" style={{ color: 'var(--text-primary)' }}>{earnings ? inr(card.value) : '—'}</div>
-            <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{card.label}</div>
-          </div>
+          <StatCard
+            key={card.label}
+            icon={card.icon}
+            color={card.color}
+            label={card.label}
+            hint={card.hint}
+            value={earnings ? inr(card.value) : '—'}
+          />
         ))}
       </div>
       <DataTable

@@ -27,11 +27,8 @@ export default defineConfig({
       // In production (devadmin.meralot.com → devadminapi.meralot.com) the same
       // same-site relationship applies and no proxy is needed.
       "/api": {
-        target: "https://test-api.meralot.com",
+        target: "http://localhost:4000",
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-        cookieDomainRewrite: "localhost",
       },
     },
   },

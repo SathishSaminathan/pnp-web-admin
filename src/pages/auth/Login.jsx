@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, Input, Button, Checkbox, Alert } from 'antd';
-import { Link } from 'react-router-dom';
 import {
     UserOutlined,
     LockOutlined,
@@ -73,7 +72,7 @@ const ParticleNetwork = () => {
 };
 
 /* ── Typewriter ── */
-const PHRASES = ['Command Center', 'Space Manager', 'Fleet Control', 'Booking Hub'];
+const PHRASES = ['Users & Owners', 'Earnings', 'Visit History', 'Listings'];
 const useTypewriter = () => {
     const [text, setText]       = useState('');
     const [wIdx, setWIdx]       = useState(0);
@@ -143,9 +142,9 @@ const Login = () => {
     };
 
     const features = [
-        { icon: <ThunderboltOutlined />, title: 'Real-time Bookings',  desc: 'Live space availability & booking monitoring' },
-        { icon: <SecurityScanOutlined />, title: 'Secure Platform',   desc: 'Role-based access with enterprise-grade security' },
-        { icon: <GlobalOutlined />,       title: 'Fleet Management', desc: 'Track vehicles, spaces, and providers in one place' },
+        { icon: <ThunderboltOutlined />, title: 'Live operations',  desc: 'Users, owners, listings, and visit history' },
+        { icon: <SecurityScanOutlined />, title: 'Admin access',   desc: 'Email and password login for PNP staff' },
+        { icon: <GlobalOutlined />,       title: 'Earnings', desc: 'Platform fees, settlements, and host payouts' },
     ];
 
     return (
@@ -188,7 +187,7 @@ const Login = () => {
                 <div className="relative z-10 flex items-center gap-3">
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
                         <img src="/meralottm.png" alt="Meralot" className="h-7 w-auto object-contain" style={{ filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.5))' }} />
-                        <span className="text-sm font-bold tracking-wide" style={{ color: '#ffffff' }}>Meralot</span>
+                        <span className="text-sm font-bold tracking-wide" style={{ color: '#ffffff' }}>PNP</span>
                     </div>
                 </div>
 
@@ -210,7 +209,7 @@ const Login = () => {
                         <span className="nf-cursor" style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 200 }}>|</span>
                     </h1>
                     <p className="text-base leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                        Manage spaces, vehicles, bookings, and users from a single enterprise-grade admin dashboard.
+                        Manage users, owners, earnings, and visit history from one dashboard.
                     </p>
 
                     {/* Feature cards */}
@@ -263,7 +262,7 @@ const Login = () => {
                     <div className="lg:hidden flex items-center gap-3 mb-10">
                         <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}>
                             <img src="/meralottm.png" alt="Meralot" className="h-7 w-auto object-contain" style={{ filter: 'drop-shadow(0 0 4px rgba(37,99,235,0.4))' }} />
-                            <span className="text-sm font-bold tracking-wide" style={{ color: '#2563eb' }}>Meralot</span>
+                            <span className="text-sm font-bold tracking-wide" style={{ color: '#2563eb' }}>PNP</span>
                         </div>
                     </div>
 
@@ -274,7 +273,7 @@ const Login = () => {
                         <p className="text-sm" style={{ color: '#6b7280' }}>
                             {mfaRequired
                                 ? 'Enter the 6-digit code from your authenticator app.'
-                                : 'Welcome back to Meralot Admin — enter your credentials to continue.'}
+                                : 'Use admin@pnp.app / Admin@123 for the demo.'}
                         </p>
                     </div>
 
@@ -306,7 +305,7 @@ const Login = () => {
                             >
                                 <Input
                                     prefix={<UserOutlined style={{ color: '#9ca3af' }} className="mr-1" />}
-                                    placeholder="admin@meralot.com"
+                                    placeholder="admin@pnp.app"
                                     className="rounded-xl h-12 text-sm"
                                     style={{ background: '#f9fafb', border: '1px solid #e5e7eb', color: '#111827' }}
                                 />
@@ -331,9 +330,6 @@ const Login = () => {
                                         <span className="text-sm">Remember me</span>
                                     </Checkbox>
                                 </Form.Item>
-                                <Link to="/forgot-password" className="text-sm font-semibold transition-colors" style={{ color: '#2563eb' }}>
-                                    Forgot password?
-                                </Link>
                             </div>
 
                             <Form.Item className="mb-0">

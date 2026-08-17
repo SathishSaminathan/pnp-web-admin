@@ -1,4 +1,24 @@
-# React + Vite
+# PNP Admin
+
+Web admin for PNP. Talks to `pnp-backend`.
+
+## Run
+
+Keep the backend on `http://localhost:4000`, then:
+
+```bash
+cd pnp-web-admin
+yarn
+yarn dev
+```
+
+Open `http://localhost:5173`
+
+## Credentials
+
+| Email | Password |
+| --- | --- |
+| `admin@pnp.app` | `Admin@123` |
 
 ## Environment Variables
 

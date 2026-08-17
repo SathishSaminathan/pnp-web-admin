@@ -97,212 +97,29 @@ const MainLayout = () => {
         {
             key: 'separator-1',
             type: 'group',
-            label: 'Core Entities',
+            label: 'People',
             children: [
-                {
-                    key: '/users',
-                    icon: <ShopOutlined />,
-                    label: 'Users',
-                },
-                {
-                    key: '/bookings',
-                    icon: <CarOutlined />,
-                    label: 'Bookings',
-                },
-                {
-                    key: '/transactions',
-                    icon: <SwapOutlined />,
-                    label: 'Transactions',
-                },
-                // {
-                //     key: '/providers',
-                //     icon: <BankOutlined />,
-                //     label: 'Providers',
-                // },
-                // {
-                //     key: '/requests',
-                //     icon: <FileTextOutlined />,
-                //     label: 'Requests',
-                // },
-            ]
+                { key: '/users', icon: <UserOutlined />, label: 'Users' },
+                { key: '/owners', icon: <TeamOutlined />, label: 'Owners' },
+            ],
         },
-        // {
-        //     key: 'separator-2',
-        //     type: 'group',
-        //     label: 'Finance',
-        //     children: [
-        //         {
-        //             key: '/transactions',
-        //             icon: <BarChartOutlined />,
-        //             label: 'Transactions',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-kyc',
-        //     type: 'group',
-        //     label: 'Compliance',
-        //     children: [
-        //         {
-        //             key: '/kyc',
-        //             icon: <SafetyCertificateOutlined />,
-        //             label: 'KYC Management',
-        //         },
-        //         {
-        //             key: '/bank-account-requests',
-        //             icon: <BankOutlined />,
-        //             label: 'Bank Account Requests',
-        //         },
-        //         {
-        //             key: '/account-providers',
-        //             icon: <ApiOutlined />,
-        //             label: 'Account Providers',
-        //         },
-        //         {
-        //             key: '/identity-providers',
-        //             icon: <SolutionOutlined />,
-        //             label: 'Identity Providers',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-payments',
-        //     type: 'group',
-        //     label: 'Payments & Rates',
-        //     children: [
-        //         {
-        //             key: '/mpos-requests',
-        //             icon: <MobileOutlined />,
-        //             label: 'MPOS Approval',
-        //         },
-        //         {
-        //             key: '/mdr-config',
-        //             icon: <PercentageOutlined />,
-        //             label: 'MDR Configuration',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-transactions',
-        //     type: 'group',
-        //     label: 'Transactions',
-        //     children: [
-        //         {
-        //             key: '/transactions',
-        //             icon: <SwapOutlined />,
-        //             label: 'Transactions',
-        //         },
-        //         {
-        //             key: '/credit-transactions',
-        //             icon: <CreditCardOutlined />,
-        //             label: 'Credit Transactions',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-accounts',
-        //     type: 'group',
-        //     label: 'Finance & Accounts',
-        //     children: [
-        //         {
-        //             key: '/virtual-accounts',
-        //             icon: <BankFilled />,
-        //             label: 'Virtual Accounts',
-        //         },
-        //         {
-        //             key: '/wallets',
-        //             icon: <WalletOutlined />,
-        //             label: 'Wallets',
-        //         },
-        //         {
-        //             key: '/beneficiaries',
-        //             icon: <TeamOutlined />,
-        //             label: 'Beneficiaries',
-        //         },
-        //         {
-        //             key: '/linked-bank-accounts',
-        //             icon: <BankOutlined />,
-        //             label: 'Linked Bank Accounts',
-        //         },
-        //         {
-        //             key: '/linked-wallets',
-        //             icon: <LinkOutlined />,
-        //             label: 'Linked Wallets',
-        //         },
-        //         {
-        //             key: '/admin-wallets',
-        //             icon: <WalletOutlined />,
-        //             label: 'Admin Wallets',
-        //         },
-        //         {
-        //             key: '/noah-custody-wallets',
-        //             icon: <DatabaseOutlined />,
-        //             label: 'Noah Custody Wallets',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-currency',
-        //     type: 'group',
-        //     label: 'Currency',
-        //     children: [
-        //         {
-        //             key: '/currencies',
-        //             icon: <DollarOutlined />,
-        //             label: 'Currencies',
-        //         },
-        //         {
-        //             key: '/exchange-rates',
-        //             icon: <SwapOutlined />,
-        //             label: 'Exchange Rates',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-user-activity',
-        //     type: 'group',
-        //     label: 'User Activity',
-        //     children: [
-        //         {
-        //             key: '/user-sessions',
-        //             icon: <MonitorOutlined />,
-        //             label: 'User Sessions',
-        //         },
-        //         {
-        //             key: '/user-devices',
-        //             icon: <MobileOutlined />,
-        //             label: 'User Devices',
-        //         },
-        //         {
-        //             key: '/user-otps',
-        //             icon: <KeyOutlined />,
-        //             label: 'User OTPs',
-        //         },
-        //     ]
-        // },
-        // {
-        //     key: 'separator-reference',
-        //     type: 'group',
-        //     label: 'Reference Data',
-        //     children: [
-        //         {
-        //             key: '/geography',
-        //             icon: <GlobalOutlined />,
-        //             label: 'Geography',
-        //         },
-        //     ]
-        // },
+        {
+            key: 'separator-2',
+            type: 'group',
+            label: 'Operations',
+            children: [
+                { key: '/listings', icon: <ShopOutlined />, label: 'Listings' },
+                { key: '/history', icon: <FileTextOutlined />, label: 'History' },
+                { key: '/earnings', icon: <DollarOutlined />, label: 'Earnings' },
+            ],
+        },
         {
             key: 'separator-3',
             type: 'group',
             label: 'Administration',
             children: [
-                {
-                    key: '/settings',
-                    icon: <SafetyCertificateOutlined />,
-                    label: 'Settings',
-                },
-            ]
+                { key: '/settings', icon: <SafetyCertificateOutlined />, label: 'Settings' },
+            ],
         },
     ];
 
@@ -350,7 +167,7 @@ const MainLayout = () => {
                         />
                         {!collapsed && (
                             <span className="text-lg font-bold tracking-tight truncate" style={{ color: 'var(--text-primary)' }}>
-                                Meralot
+                                PNP Admin
                             </span>
                         )}
                     </div>

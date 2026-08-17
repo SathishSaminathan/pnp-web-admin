@@ -34,11 +34,11 @@ export const AuthProvider = ({ children }) => {
         const userId = getCookie(USER_ID_KEY);
         if (!userId) return;
 
-        authApi.getUserProfile(userId)
+        authApi.getProfile()
             .then((res) => {
                 // If the user already logged in while this request was in-flight, skip
                 if (userRef.current) return;
-                const adminData = res?.data?.data ?? null;
+                const adminData = res?.data?.data ?? res?.data ?? res ?? null;
                 setUserSynced(adminData);
             })
             .catch(() => {
@@ -107,13 +107,11 @@ export const AuthProvider = ({ children }) => {
 
         // Fetch full profile using the userId from login response
         let adminData = basicUserData;
-        if (userId) {
-            try {
-                const profileRes = await authApi.getUserProfile(userId);
-                adminData = profileRes?.data?.data ?? basicUserData;
-            } catch {
-                // Fall back to basic login data if profile fetch fails
-            }
+        try {
+            const profileRes = await authApi.getProfile();
+            adminData = profileRes?.data?.data ?? profileRes?.data ?? basicUserData;
+        } catch {
+            // Fall back to basic login data if profile fetch fails
         }
 
         setUserSynced(adminData);  // updates both ref and state

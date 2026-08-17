@@ -3,7 +3,9 @@ import { Input, Table, Tag } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 
-const UsersList = () => {
+const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
+
+const OwnersList = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -11,7 +13,7 @@ const UsersList = () => {
   const load = async value => {
     setLoading(true);
     try {
-      const res = await adminApi.users({ search: value || undefined });
+      const res = await adminApi.owners({ search: value || undefined });
       setItems(res.items || []);
     } finally {
       setLoading(false);
@@ -22,9 +24,9 @@ const UsersList = () => {
 
   return (
     <div>
-      <PageHeader title="Users" description="Everyone who has signed in with OTP, including hosts." />
+      <PageHeader title="Owners" description="Hosts who have published at least one restroom listing." />
       <Input.Search
-        placeholder="Search name, phone, or city"
+        placeholder="Search owner"
         allowClear
         className="mb-4 max-w-md"
         value={search}
@@ -36,26 +38,27 @@ const UsersList = () => {
         loading={loading}
         dataSource={items}
         pagination={{ pageSize: 10 }}
+        expandable={{
+          expandedRowRender: owner => (
+            <div className="text-sm">
+              {(owner.listings || []).map(item => (
+                <Tag key={item.id} className="mb-1">{item.name}</Tag>
+              ))}
+            </div>
+          ),
+        }}
         columns={[
-          { title: 'Name', dataIndex: 'name', render: value => value || '—' },
+          { title: 'Owner', dataIndex: 'name' },
           { title: 'Phone', dataIndex: 'phone' },
-          { title: 'City', dataIndex: 'city', render: value => value || '—' },
-          {
-            title: 'Role',
-            dataIndex: 'role',
-            render: role => <Tag color={role === 'owner' ? 'purple' : 'blue'}>{role}</Tag>,
-          },
-          { title: 'Visits', dataIndex: 'bookingCount' },
+          { title: 'City', dataIndex: 'city' },
           { title: 'Listings', dataIndex: 'listingCount' },
-          {
-            title: 'Profile',
-            dataIndex: 'profileCompleted',
-            render: done => <Tag color={done ? 'green' : 'orange'}>{done ? 'Complete' : 'Pending'}</Tag>,
-          },
+          { title: 'Host bookings', dataIndex: 'hostBookingCount' },
+          { title: 'Settled', dataIndex: 'settledAmount', render: inr },
+          { title: 'Pending', dataIndex: 'pendingAmount', render: inr },
         ]}
       />
     </div>
   );
 };
 
-export default UsersList;
+export default OwnersList;

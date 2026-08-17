@@ -5,7 +5,7 @@ const authApi = {
     // === Authentication ===
 
     login: async (credentials) => {
-        return apiClient.post(API_ROUTES.AUTH.LOGIN, credentials);
+        return apiClient.post(API_ROUTES.AUTH.LOGIN, credentials, { skipErrorToast: true });
     },
 
     register: async (adminData) => {

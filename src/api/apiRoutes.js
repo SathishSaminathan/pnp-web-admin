@@ -1,6 +1,6 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL
-    ? `${import.meta.env.VITE_API_BASE_URL}`
-    : '/api';
+import { PNP_API_BASE_URL } from '../constants/api';
+
+const API_BASE = String(import.meta.env.VITE_API_BASE_URL || PNP_API_BASE_URL).replace(/\/$/, '');
 
 export const API_ROUTES = {
     BASE_URL: API_BASE,

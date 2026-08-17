@@ -27,8 +27,9 @@ export default defineConfig({
       // In production (devadmin.meralot.com → devadminapi.meralot.com) the same
       // same-site relationship applies and no proxy is needed.
       "/api": {
-        target: "http://localhost:4000",
+        target: "https://pnp-backend-production-623c.up.railway.app",
         changeOrigin: true,
+        secure: true,
       },
     },
   },

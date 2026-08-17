@@ -1,10 +1,10 @@
 # PNP Admin
 
-Web admin for PNP. Talks to `pnp-backend`.
+Web admin for PNP. Uses the same Railway API as the mobile app so users, blocks, and listings stay in sync.
+
+API: `https://pnp-backend-production-623c.up.railway.app/api`
 
 ## Run
-
-Keep the backend on `http://localhost:4000`, then:
 
 ```bash
 cd pnp-web-admin
@@ -13,6 +13,8 @@ yarn dev
 ```
 
 Open `http://localhost:5173`
+
+To talk to a local backend instead, set `VITE_API_BASE_URL=http://localhost:4000/api` in `.env.local` and restart Vite.
 
 ## Credentials
 
@@ -29,15 +31,12 @@ For Vercel deployments, add the same variable in the Vercel dashboard under
 Project Settings > Environment Variables:
 
 ```dotenv
-VITE_API_BASE_URL=/api
+VITE_API_BASE_URL=https://pnp-backend-production-623c.up.railway.app/api
 VITE_APP_ENV=production
 VITE_API_WITH_CREDENTIALS=false
 ```
 
-`.env.local` is intentionally not committed and is not uploaded to Vercel. If you
-use the root-relative `/api` path in production, `vercel.json` rewrites those
-requests to `https://test-api.meralot.com` so browser requests stay same-origin
-and avoid CORS failures.
+`.env.local` is intentionally not committed and is not uploaded to Vercel.
 
 If you point `VITE_API_BASE_URL` directly to a different origin, keep
 `VITE_API_WITH_CREDENTIALS=false` unless the backend returns both a specific

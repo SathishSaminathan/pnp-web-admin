@@ -39,7 +39,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://test-api.meralot.com/:path*"
+      "destination": "https://pnp-backend-production-623c.up.railway.app/api/:path*"
     },
     {
       "source": "/(.*)",

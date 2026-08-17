@@ -38,5 +38,7 @@ export const API_ROUTES = {
         EARNINGS: `${API_BASE}/admin/earnings`,
         TRANSACTIONS: `${API_BASE}/admin/transactions`,
         REVIEWS: `${API_BASE}/admin/reviews`,
+        MASTER: `${API_BASE}/admin/master`,
+        MASTER_ITEM: (type, id) => `${API_BASE}/admin/master/${type}${id ? `/${id}` : ''}`,
     },
 };

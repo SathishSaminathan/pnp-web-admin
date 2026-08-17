@@ -13,6 +13,7 @@ const OwnersList = lazy(() => import('../pages/owners/OwnersList'));
 const ListingsList = lazy(() => import('../pages/listings/ListingsList'));
 const HistoryList = lazy(() => import('../pages/history/HistoryList'));
 const EarningsPage = lazy(() => import('../pages/earnings/EarningsPage'));
+const MasterDataPage = lazy(() => import('../pages/master/MasterDataPage'));
 const Settings = lazy(() => import('../pages/settings/Settings'));
 
 const PageLoader = () => (
@@ -52,6 +53,7 @@ const AppRoutes = () => {
                         <Route path="/listings" element={<ProtectedPageRoute><ListingsList /></ProtectedPageRoute>} />
                         <Route path="/history" element={<ProtectedPageRoute><HistoryList /></ProtectedPageRoute>} />
                         <Route path="/earnings" element={<ProtectedPageRoute><EarningsPage /></ProtectedPageRoute>} />
+                        <Route path="/master-data" element={<ProtectedPageRoute><MasterDataPage /></ProtectedPageRoute>} />
                         <Route path="/settings" element={<ProtectedPageRoute><Settings /></ProtectedPageRoute>} />
                         <Route path="*" element={<NotFound />} />
                     </Route>

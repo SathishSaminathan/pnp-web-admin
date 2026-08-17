@@ -11,4 +11,8 @@ export const adminApi = {
   earnings: () => apiClient.get(API_ROUTES.ADMIN.EARNINGS),
   transactions: () => apiClient.get(API_ROUTES.ADMIN.TRANSACTIONS),
   reviews: () => apiClient.get(API_ROUTES.ADMIN.REVIEWS),
+  master: () => apiClient.get(API_ROUTES.ADMIN.MASTER),
+  createMasterItem: (type, payload) => apiClient.post(API_ROUTES.ADMIN.MASTER_ITEM(type), payload),
+  updateMasterItem: (type, id, payload) => apiClient.put(API_ROUTES.ADMIN.MASTER_ITEM(type, id), payload),
+  deleteMasterItem: (type, id) => apiClient.delete(API_ROUTES.ADMIN.MASTER_ITEM(type, id)),
 };

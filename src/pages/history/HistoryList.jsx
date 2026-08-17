@@ -27,17 +27,19 @@ const HistoryList = () => {
   return (
     <div>
       <PageHeader title="History" description="All paid visits across customers and hosts." />
-      <Select
-        allowClear
-        placeholder="Filter status"
-        className="mb-4 w-52"
-        value={status}
-        onChange={value => {
-          setStatus(value);
-          load(value);
-        }}
-        options={['UPCOMING', 'ACTIVE', 'COMPLETED', 'CANCELLED'].map(value => ({ label: value, value }))}
-      />
+      <div style={{ marginBottom: 16 }}>
+        <Select
+          allowClear
+          placeholder="Filter status"
+          className="w-52"
+          value={status}
+          onChange={value => {
+            setStatus(value);
+            load(value);
+          }}
+          options={['UPCOMING', 'ACTIVE', 'COMPLETED', 'CANCELLED'].map(value => ({ label: value, value }))}
+        />
+      </div>
       <DataTable
         rowKey="id"
         loading={loading}

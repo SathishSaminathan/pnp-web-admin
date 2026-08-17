@@ -26,14 +26,15 @@ const OwnersList = () => {
   return (
     <div>
       <PageHeader title="Owners" description="Hosts who have published at least one restroom listing." />
-      <Input.Search
-        placeholder="Search owner"
-        allowClear
-        className="mb-4 max-w-md"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        onSearch={load}
-      />
+      <div style={{ marginBottom: 16 }} className="max-w-md">
+        <Input.Search
+          placeholder="Search owner"
+          allowClear
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onSearch={load}
+        />
+      </div>
       <DataTable
         rowKey="id"
         loading={loading}

@@ -25,14 +25,15 @@ const UsersList = () => {
   return (
     <div>
       <PageHeader title="Users" description="Everyone who has signed in with OTP, including hosts." />
-      <Input.Search
-        placeholder="Search name, phone, or city"
-        allowClear
-        className="mb-4 max-w-md"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        onSearch={load}
-      />
+      <div style={{ marginBottom: 16 }} className="max-w-md">
+        <Input.Search
+          placeholder="Search name, phone, or city"
+          allowClear
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onSearch={load}
+        />
+      </div>
       <DataTable
         rowKey="id"
         loading={loading}

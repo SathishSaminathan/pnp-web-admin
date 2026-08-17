@@ -969,7 +969,20 @@ html.dark .network-issue-title--success {
   display: none !important;
 }
 
-.pnp-data-table .ant-table-tbody > tr > td {
+/* Ant Design injects a hidden measure row when scroll.x is set.
+   Padding on td made it look like a blank first row. */
+.pnp-data-table .ant-table-measure-row,
+.pnp-data-table .ant-table-measure-row > td {
+  height: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+  visibility: collapse;
+}
+
+.pnp-data-table .ant-table-tbody > tr.ant-table-row > td {
   border-bottom: 1px solid var(--table-border) !important;
   padding: 16px 18px !important;
   background: transparent !important;
@@ -977,18 +990,18 @@ html.dark .network-issue-title--success {
   font-size: 13.5px;
 }
 
-.pnp-data-table .ant-table-tbody > tr:nth-child(even) > td {
+.pnp-data-table .ant-table-tbody > tr.ant-table-row:nth-child(even) > td {
   background: var(--table-stripe) !important;
 }
 
-.pnp-data-table .ant-table-tbody > tr:last-child > td {
+.pnp-data-table .ant-table-tbody > tr.ant-table-row:last-child > td {
   border-bottom: none !important;
 }
 
-.pnp-data-table .ant-table-tbody > tr:hover > td,
-.pnp-data-table td.ant-table-cell-row-hover,
-.pnp-data-table td.ant-table-cell-row-hover.ant-table-cell-fix-left,
-.pnp-data-table td.ant-table-cell-row-hover.ant-table-cell-fix-right {
+.pnp-data-table .ant-table-tbody > tr.ant-table-row:hover > td,
+.pnp-data-table tr.ant-table-row td.ant-table-cell-row-hover,
+.pnp-data-table tr.ant-table-row td.ant-table-cell-row-hover.ant-table-cell-fix-left,
+.pnp-data-table tr.ant-table-row td.ant-table-cell-row-hover.ant-table-cell-fix-right {
   background: var(--table-hover-bg) !important;
 }
 
@@ -1006,12 +1019,12 @@ html.dark .pnp-data-table .ant-table-thead > tr > th {
   background: rgba(255, 255, 255, 0.03) !important;
 }
 
-html.dark .pnp-data-table .ant-table-tbody > tr:nth-child(even) > td {
+html.dark .pnp-data-table .ant-table-tbody > tr.ant-table-row:nth-child(even) > td {
   background: var(--table-stripe) !important;
 }
 
-html.dark .pnp-data-table .ant-table-tbody > tr:hover > td,
-html.dark .pnp-data-table td.ant-table-cell-row-hover {
+html.dark .pnp-data-table .ant-table-tbody > tr.ant-table-row:hover > td,
+html.dark .pnp-data-table tr.ant-table-row td.ant-table-cell-row-hover {
   background: var(--table-hover-bg) !important;
 }
 

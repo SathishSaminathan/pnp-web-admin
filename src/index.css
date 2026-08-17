@@ -1,0 +1,936 @@
+@import "tailwindcss";
+
+/* ===== CSS CUSTOM PROPERTIES: LIGHT / DARK THEMES ===== */
+:root {
+  /* Light */
+  --bg-app:          #f4f7fe;
+  --bg-sidebar:      #ffffff;
+  --bg-card:         #ffffff;
+  --bg-header:       #ffffff;
+  --border-color:    #e8edf5;
+  --text-primary:    #111827;
+  --text-secondary:  #6b7280;
+  --text-muted:      #94a3b8;
+  --shadow-card:     0 4px 24px -4px rgba(0, 0, 0, 0.06);
+  --sidebar-item-active-bg: #eff6ff;
+  --sidebar-item-active-color: #2563eb;
+  --table-border:    #f1f5f9;
+  --input-bg:        #f8fafc;
+  --table-hover-bg:  #eef0ff;
+}
+
+html.dark {
+  /* Dark */
+  --bg-app:          #0d1117;
+  --bg-sidebar:      #161b27;
+  --bg-card:         #1e2a3a;
+  --bg-header:       #161b27;
+  --border-color:    #2d3f55;
+  --text-primary:    #e2e8f0;
+  --text-secondary:  #94a3b8;
+  --text-muted:      #64748b;
+  --shadow-card:     0 4px 24px -4px rgba(0, 0, 0, 0.4);
+  --sidebar-item-active-bg: rgba(37, 99, 235, 0.2);
+  --sidebar-item-active-color: #60a5fa;
+  --table-border:    #2d3f55;
+  --input-bg:        #243044;
+  --table-hover-bg:  #243347;
+}
+
+/* Ant Design resets or custom Tailwind over-rides */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Typography polish */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  color: var(--text-primary);
+}
+
+/* Custom Animations for Login Screen */
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(16,185,129,0); }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Custom Component Overrides */
+
+/* Dark Sidebar Menu Polish */
+.custom-dark-menu.ant-menu-dark {
+  background: transparent !important;
+}
+
+.custom-dark-menu.ant-menu-dark .ant-menu-item {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  width: calc(100% - 16px);
+  margin-left: 8px;
+}
+
+.custom-dark-menu.ant-menu-dark .ant-menu-item-selected {
+  background-color: #2563eb !important;
+  /* blue-600 */
+}
+
+/* Minimal Table Polish for Dashboard */
+.custom-minimal-table .ant-table-thead>tr>th {
+  background: var(--bg-card) !important;
+  color: #6b7280;
+  /* gray-500 */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 12px 16px;
+}
+
+.custom-minimal-table .ant-table-tbody>tr>td {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 16px;
+  background: var(--bg-card) !important;
+}
+
+.custom-minimal-table .ant-table-tbody>tr:last-child>td {
+  border-bottom: none;
+}
+
+/* Override antd CSS variable so antd's own rules resolve to our card background */
+.custom-minimal-table,
+.custom-minimal-table .ant-table,
+.custom-minimal-table .ant-table-wrapper {
+  --ant-color-bg-container: var(--bg-card);
+  --ant-table-bg: var(--bg-card);
+  --ant-table-fixed-bg: var(--bg-card);
+}
+
+/* Fix fixed-column background so content doesn't bleed through */
+.custom-minimal-table .ant-table-cell-fix-left,
+.custom-minimal-table .ant-table-cell-fix-right,
+.custom-minimal-table .ant-table-cell-fix {
+  background: var(--bg-card) !important;
+}
+
+/* Cover all cells (thead th + tbody td) including any antd-set transparent overrides */
+.custom-minimal-table .ant-table-cell {
+  background: var(--bg-card) !important;
+}
+
+/* Ant Design 5/6 applies hover via .ant-table-cell-row-hover class, not tr:hover */
+.custom-minimal-table td.ant-table-cell-row-hover,
+.custom-minimal-table td.ant-table-cell-row-hover.ant-table-cell-fix-left,
+.custom-minimal-table td.ant-table-cell-row-hover.ant-table-cell-fix-right {
+  background: var(--table-hover-bg) !important;
+}
+
+/* Boltz Theme Overrides */
+.custom-light-menu .ant-menu-item-selected {
+  background-color: #EEF2FF !important;
+  color: #2563EB !important;
+  border-radius: 12px !important;
+  font-weight: 600;
+}
+
+.custom-light-menu .ant-menu-submenu-title {
+  color: #64748B !important;
+  font-weight: 600;
+}
+
+.custom-light-menu .ant-menu-item {
+  color: #64748B;
+  font-weight: 500;
+  border-radius: 12px;
+  margin: 4px 8px;
+  width: calc(100% - 16px);
+}
+
+.custom-light-menu .ant-menu-item:hover {
+  background-color: #F8FAFC;
+  color: #1E293B;
+}
+
+/* ── Collapsed sidebar: hide group labels, fix item sizing ── */
+.ant-layout-sider-collapsed .ant-menu-item-group-title {
+  display: none !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-item-group-list .ant-menu-item,
+.ant-layout-sider-collapsed .custom-light-menu .ant-menu-item {
+  margin: 4px auto !important;
+  width: 48px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-item .ant-menu-title-content {
+  display: none !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-item .anticon {
+  font-size: 18px !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+html.dark .ant-layout-sider-collapsed .custom-light-menu .ant-menu-item-selected {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+.ant-layout-sider-collapsed .custom-light-menu .ant-menu-item-selected {
+  background-color: #EEF2FF !important;
+}
+
+.custom-no-border-table .ant-table-cell {
+  border-bottom: none !important;
+  padding: 12px 8px !important;
+}
+
+.custom-no-border-select .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.custom-bold-select .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.custom-bold-select .ant-select-selection-item {
+  font-weight: 700 !important;
+}
+
+/* ===== DARK MODE OVERRIDES ===== */
+
+/* Light menu in dark mode */
+html.dark .custom-light-menu .ant-menu-item-selected {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  color: #60a5fa !important;
+}
+
+html.dark .custom-light-menu .ant-menu-item {
+  color: #94a3b8 !important;
+}
+
+html.dark .custom-light-menu .ant-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .custom-light-menu .ant-menu-item-group-title {
+  color: #64748b !important;
+}
+
+/* ===== Theme Toggle — Premium Sun / Moon Switch ===== */
+.theme-toggle-btn {
+  position: relative;
+  width: 64px;
+  height: 32px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  flex-shrink: 0;
+  vertical-align: middle;
+  overflow: hidden;
+  /* Daytime sky: top-left sky-blue → bottom-right warm gold */
+  background: linear-gradient(155deg, #bae6fd 0%, #7dd3fc 28%, #fed7aa 72%, #fbbf24 100%);
+  box-shadow:
+    0 2px 10px rgba(245, 158, 11, 0.38),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1.5px 0 rgba(160, 100, 0, 0.1);
+  transition:
+    background    0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow    0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform     0.18s cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+.theme-toggle-btn:hover  { transform: scale(1.06); }
+.theme-toggle-btn:active { transform: scale(0.96); }
+
+html.dark .theme-toggle-btn {
+  /* Deep-space night sky */
+  background: linear-gradient(155deg, #020617 0%, #0f172a 32%, #1e1b4b 68%, #312e81 100%);
+  box-shadow:
+    0 2px 12px rgba(99, 102, 241, 0.45),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* ── Clouds (light) / Stars (dark) ── */
+.theme-toggle-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  /* Fluffy clouds cluster on the right side */
+  background:
+    radial-gradient(ellipse 17px 10px at 79% 36%, rgba(255,255,255,0.82), transparent 68%),
+    radial-gradient(ellipse 12px  7px at 88% 66%, rgba(255,255,255,0.60), transparent 68%),
+    radial-gradient(ellipse  9px  6px at 71% 68%, rgba(255,255,255,0.44), transparent 68%);
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+
+html.dark .theme-toggle-btn::before {
+  /* Star pinpoints scattered on the left (open) half */
+  background:
+    radial-gradient(circle 1.6px at 17% 27%, rgba(255,255,255,0.95), transparent 100%),
+    radial-gradient(circle 1.1px at 34% 68%, rgba(255,255,255,0.70), transparent 100%),
+    radial-gradient(circle 1.3px at 11% 66%, rgba(255,255,255,0.80), transparent 100%),
+    radial-gradient(circle 0.9px at 45% 36%, rgba(255,255,255,0.55), transparent 100%),
+    radial-gradient(circle 1.0px at 27% 50%, rgba(255,255,255,0.65), transparent 100%),
+    radial-gradient(circle 0.7px at 40% 58%, rgba(255,255,255,0.45), transparent 100%);
+  animation: star-twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes star-twinkle {
+  0%   { opacity: 0.65; }
+  35%  { opacity: 1;    }
+  65%  { opacity: 0.82; }
+  100% { opacity: 0.70; }
+}
+
+/* ── Orb (sun → moon) ── */
+.theme-toggle-btn::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  /* ☀️  Sun — warm yellow with inner highlight */
+  background: radial-gradient(circle at 33% 30%, #fffde7 0%, #fde047 32%, #fbbf24 62%, #f59e0b 100%);
+  box-shadow:
+    0 0 0 2.5px rgba(253, 224, 71, 0.22),
+    0 0 14px 5px  rgba(251, 191, 36, 0.55),
+    0 0 32px 8px  rgba(251, 191, 36, 0.20),
+    0 1px 4px     rgba(0, 0, 0, 0.18);
+  transition:
+    transform     0.58s cubic-bezier(0.34, 1.5, 0.64, 1),
+    width         0.20s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.20s cubic-bezier(0.4, 0, 0.2, 1),
+    background    0.48s ease,
+    box-shadow    0.48s ease;
+}
+
+/* Press squish — sun stretches right */
+.theme-toggle-btn:active::after {
+  width: 30px;
+  border-radius: 13px;
+}
+
+.theme-toggle-btn:hover::after {
+  box-shadow:
+    0 0 0 3px   rgba(253, 224, 71, 0.32),
+    0 0 22px 8px  rgba(251, 191, 36, 0.65),
+    0 0 42px 12px rgba(251, 191, 36, 0.22),
+    0 1px 4px     rgba(0, 0, 0, 0.18);
+}
+
+/* 🌙  Moon state */
+html.dark .theme-toggle-btn::after {
+  transform: translateX(32px);
+  /*
+   * Crescent via a self-contained dark radial overlay positioned at the
+   * top-right quadrant — no background-color matching needed.
+   * Layer order (top → bottom):
+   *   1. Shadow hemisphere → creates the crescent illusion
+   *   2. Subtle crater dimple
+   *   3. Pearlescent silver-blue moon surface
+   */
+  background:
+    radial-gradient(circle 11px at 70% 26%, #060414 0%, rgba(6, 4, 20, 0) 100%),
+    radial-gradient(circle 2.5px at 44% 63%, rgba(0, 0, 0, 0.12) 0%, transparent 100%),
+    radial-gradient(circle at 34% 42%, #eef5ff 0%, #cfddf5 28%, #a8c0db 58%, #88a0c4 100%);
+  box-shadow:
+    0 0 0 1.5px  rgba(200, 220, 255, 0.13),   /* subtle rim light   */
+    0 0 14px 5px  rgba(147, 197, 253, 0.50),  /* icy blue inner halo */
+    0 0 32px 10px rgba(99, 102, 241, 0.25),   /* indigo outer corona */
+    0 2px 8px     rgba(0, 0, 0, 0.65);        /* drop shadow        */
+}
+
+/* Press squish — moon stretches left (right edge stays fixed) */
+html.dark .theme-toggle-btn:active::after {
+  width: 30px;
+  border-radius: 13px;
+  transform: translateX(26px); /* maintain right edge: 4+26+30=60 = 64-4 ✓ */
+}
+
+html.dark .theme-toggle-btn:hover::after {
+  box-shadow:
+    0 0 0 2px    rgba(200, 220, 255, 0.22),
+    0 0 20px 8px  rgba(147, 197, 253, 0.68),
+    0 0 44px 14px rgba(99, 102, 241, 0.35),
+    0 2px 8px     rgba(0, 0, 0, 0.65);
+}
+
+/* ===== View Transition API — Full-screen circular theme wipe ===== */
+
+/* Freeze all element transitions during the view-transition snapshot phase */
+html.vt-active *,
+html.vt-active *::before,
+html.vt-active *::after {
+  transition-duration: 0ms !important;
+  animation-duration: 0ms !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-new(root) {
+    animation: theme-vt-expand 0.68s cubic-bezier(0.16, 1, 0.3, 1) both;
+    mix-blend-mode: normal;
+  }
+}
+
+@keyframes theme-vt-expand {
+  from {
+    clip-path: circle(0px at var(--theme-vt-x, 50%) var(--theme-vt-y, 50%));
+    opacity: 0.85;
+  }
+  to {
+    clip-path: circle(150vmax at var(--theme-vt-x, 50%) var(--theme-vt-y, 50%));
+    opacity: 1;
+  }
+}
+
+/* Dark scrollbar */
+html.dark ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #161b27;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2d3f55;
+  border-radius: 3px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3d5570;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* DetailInfoDrawer — remove bottom border on last InfoRow in a section */
+.info-section-body > div:last-child {
+  border-bottom: none !important;
+}
+
+/* Ant Design Table dark overrides */
+html.dark .ant-table {
+  background: transparent !important;
+}
+
+html.dark .ant-table-thead > tr > th {
+  background: var(--bg-card) !important;
+  border-bottom-color: #2d3f55 !important;
+  color: #64748b !important;
+}
+
+html.dark .ant-table-tbody > tr > td {
+  border-bottom-color: #2d3f55 !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .ant-table-tbody > tr:hover > td,
+html.dark .ant-table-tbody > tr > td.ant-table-cell-row-hover,
+html.dark .ant-table-cell.ant-table-cell-row-hover {
+  background: var(--table-hover-bg) !important;
+}
+
+html.dark .ant-table-cell {
+  background: var(--bg-card) !important;
+}
+
+/* Ant Design Select dark */
+html.dark .ant-select-selector {
+  background: #243044 !important;
+  border-color: #2d3f55 !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .ant-select-selection-placeholder {
+  color: #64748b !important;
+}
+
+/* Ant Design Input dark */
+html.dark .ant-input {
+  background: #243044 !important;
+  border-color: #2d3f55 !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .ant-input::placeholder {
+  color: #64748b !important;
+}
+
+html.dark .ant-input-affix-wrapper {
+  background: #243044 !important;
+  border-color: #2d3f55 !important;
+}
+
+/* Ant Tabs dark mode */
+html.dark .ant-tabs-tab {
+  color: #64748b !important;
+}
+
+html.dark .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #60a5fa !important;
+}
+
+html.dark .ant-tabs-ink-bar {
+  background: #60a5fa !important;
+}
+
+html.dark .ant-tabs-nav::before {
+  border-bottom-color: #2d3f55 !important;
+}
+
+/* User Detail Page — scrollable tabs, no "..." overflow dropdown */
+.user-detail-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  overflow: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.user-detail-tabs > .ant-tabs-nav .ant-tabs-nav-wrap::-webkit-scrollbar {
+  display: none !important;
+}
+.user-detail-tabs > .ant-tabs-nav .ant-tabs-nav-list {
+  min-width: max-content;
+}
+.user-detail-tabs > .ant-tabs-nav .ant-tabs-nav-operations {
+  display: none !important;
+}
+
+/* Ant Card dark */
+html.dark .ant-card {
+  background: #1e2a3a !important;
+  border-color: #2d3f55 !important;
+}
+
+html.dark .ant-card-head {
+  background: transparent !important;
+  border-bottom-color: #2d3f55 !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .ant-card-body {
+  color: #e2e8f0 !important;
+}
+
+/* Ant Descriptions dark */
+html.dark .ant-descriptions-item-label {
+  color: #64748b !important;
+}
+
+html.dark .ant-descriptions-item-content {
+  color: #e2e8f0 !important;
+}
+
+/* Badges dark */
+html.dark .ant-badge-count {
+  box-shadow: 0 0 0 2px #161b27;
+}
+
+/* Divider dark */
+html.dark .ant-divider {
+  border-color: #2d3f55 !important;
+}
+
+/* Tag dark */
+html.dark .ant-tag {
+  background: #243044 !important;
+  border-color: #2d3f55 !important;
+  color: #94a3b8 !important;
+}
+
+/* ── Dropdown dark ── */
+html.dark .ant-dropdown .ant-dropdown-menu {
+  background: #1a2540 !important;
+  border: 1px solid #2d3f55 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) !important;
+  padding: 6px !important;
+}
+
+html.dark .ant-dropdown .ant-dropdown-menu-item {
+  color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  margin: 1px 0 !important;
+  font-size: 13.5px !important;
+}
+
+html.dark .ant-dropdown .ant-dropdown-menu-item:hover {
+  background: rgba(255,255,255,0.07) !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .ant-dropdown .ant-dropdown-menu-item .anticon {
+  color: #64748b !important;
+}
+
+html.dark .ant-dropdown .ant-dropdown-menu-item-divider {
+  background: #2d3f55 !important;
+  margin: 6px 4px !important;
+}
+
+/* Light dropdown polish */
+.ant-dropdown .ant-dropdown-menu {
+  border-radius: 14px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06) !important;
+  padding: 6px !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item {
+  border-radius: 8px !important;
+  font-size: 13.5px !important;
+  margin: 1px 0 !important;
+}
+
+/* ── Modal dark ── */
+html.dark .ant-modal-content {
+  background: #1e2a3a !important;
+  border: 1px solid #2d3f55 !important;
+  border-radius: 20px !important;
+}
+
+html.dark .ant-modal-header {
+  background: transparent !important;
+  border-bottom-color: #2d3f55 !important;
+}
+
+html.dark .ant-modal-title {
+  color: #e2e8f0 !important;
+}
+
+html.dark .ant-modal-close {
+  color: #64748b !important;
+}
+html.dark .ant-modal-close:hover {
+  color: #94a3b8 !important;
+  background: rgba(255,255,255,0.07) !important;
+}
+
+/* ── Message toasts (both modes) ── */
+.ant-message-notice-content {
+  border-radius: 12px !important;
+  padding: 10px 18px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+
+html.dark .ant-message-notice-content {
+  background: #1e2a3a !important;
+  border: 1px solid #2d3f55 !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+html.dark .ant-message-success .anticon { color: #22c55e !important; }
+html.dark .ant-message-error   .anticon { color: #f87171 !important; }
+html.dark .ant-message-warning .anticon { color: #fbbf24 !important; }
+html.dark .ant-message-info    .anticon { color: #60a5fa !important; }
+html.dark .ant-message-custom-content { color: #e2e8f0 !important; }
+
+/* ── Drawer dark ── */
+html.dark .ant-drawer-content,
+html.dark .ant-drawer-body {
+  background: var(--bg-card) !important;
+}
+html.dark .ant-drawer-header {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+html.dark .ant-drawer-title { color: var(--text-primary) !important; }
+html.dark .ant-drawer-close { color: var(--text-muted) !important; border-radius: 8px; }
+html.dark .ant-drawer-close:hover {
+  color: var(--text-primary) !important;
+  background: rgba(255,255,255,0.07) !important;
+}
+
+/* ── Popconfirm dark ── */
+html.dark .ant-popover-inner {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
+}
+html.dark .ant-popconfirm-description,
+html.dark .ant-popconfirm-title,
+html.dark .ant-popover-message { color: var(--text-primary) !important; }
+
+/* ===== Network Issue Banner ===== */
+
+/* Desktop: card rises from bottom */
+@keyframes networkCardUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile: banner drops from top */
+@keyframes networkBannerDown {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes networkFadeOut {
+    0%   { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes networkPulse {
+    0%   { transform: scale(1);   opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes networkDot {
+    0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+    30%           { opacity: 1;    transform: translateY(-2px); }
+}
+
+/* ── Desktop layout: centered pill at bottom ── */
+.network-issue-container {
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.network-issue-card {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 20px 13px 16px;
+    border-radius: 14px;
+    background: var(--bg-card);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    width: max-content;
+    max-width: min(380px, calc(100vw - 48px));
+    animation: networkCardUp 0.35s cubic-bezier(0.34, 1.46, 0.64, 1) both;
+}
+
+html.dark .network-issue-card {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.network-issue-card--offline {
+    border-left: 3px solid #dc2626;
+}
+
+.network-issue-card--restored {
+    border-left: 3px solid #16a34a;
+    animation: networkCardUp 0.35s cubic-bezier(0.34, 1.46, 0.64, 1) both,
+               networkFadeOut 3s ease 0.4s forwards;
+}
+
+html.dark .network-issue-card--restored {
+    border-left-color: #4ade80;
+}
+
+.network-issue-icon-wrap {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.network-issue-icon-wrap--error {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+html.dark .network-issue-icon-wrap--error {
+    background: rgba(220, 38, 38, 0.18);
+}
+
+.network-issue-icon-wrap--success {
+    background: rgba(22, 163, 74, 0.1);
+}
+
+html.dark .network-issue-icon-wrap--success {
+    background: rgba(74, 222, 128, 0.15);
+}
+
+.network-issue-pulse-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(220, 38, 38, 0.5);
+    animation: networkPulse 1.6s ease-out infinite;
+}
+
+.network-issue-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.network-issue-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.network-issue-title--success {
+    color: #16a34a;
+}
+
+html.dark .network-issue-title--success {
+    color: #4ade80;
+}
+
+.network-issue-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.network-issue-dots span {
+    display: inline-block;
+    animation: networkDot 1.3s ease-in-out infinite;
+}
+
+.network-issue-dots span:nth-child(2) { animation-delay: 0.2s; }
+.network-issue-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Mobile: full-width top banner ── */
+@media (max-width: 640px) {
+    .network-issue-container {
+        top: 0;
+        bottom: auto;
+        left: 0;
+        right: 0;
+        display: block;
+        pointer-events: auto;
+    }
+
+    .network-issue-card {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0 0 14px 14px;
+        border-top: none;
+        border-left: none;
+        border-bottom: 3px solid #dc2626;
+        padding: 14px 16px;
+        gap: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        animation: networkBannerDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .network-issue-card--offline {
+        border-left: none;
+        border-bottom: 3px solid #dc2626;
+    }
+
+    .network-issue-card--restored {
+        border-left: none;
+        border-bottom: 3px solid #16a34a;
+        animation: networkBannerDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) both,
+                   networkFadeOut 3s ease 0.4s forwards;
+    }
+
+    html.dark .network-issue-card--restored {
+        border-bottom-color: #4ade80;
+    }
+
+    .network-issue-title,
+    .network-issue-subtitle {
+        white-space: normal;
+    }
+}

@@ -1,0 +1,2357 @@
+{
+  "info": {
+    "name": "Meralot Merchants Admin API",
+    "_postman_id": "meralot-merchants-admin-bend",
+    "description": "Complete API collection for Meralot Merchants Admin Backend.\n\n**Setup:**\n1. Set the `baseUrl` collection variable to your server base URL (e.g. `http://localhost:3000/api`).\n2. After a successful login, copy the returned `token` and set it as the `jwt` collection variable.\n3. All protected routes automatically inherit the `Authorization: Bearer {{jwt}}` header.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api", "type": "string" },
+    { "key": "jwt", "value": "", "type": "string" },
+    { "key": "providerId", "value": "PROVIDER_OBJECT_ID", "type": "string" },
+    { "key": "requestId", "value": "REQUEST_OBJECT_ID", "type": "string" },
+    { "key": "documentId", "value": "DOCUMENT_OBJECT_ID", "type": "string" },
+    { "key": "sessionId", "value": "SESSION_OBJECT_ID", "type": "string" },
+    { "key": "deviceId", "value": "DEVICE_OBJECT_ID", "type": "string" },
+    { "key": "userId", "value": "USER_OBJECT_ID", "type": "string" },
+    { "key": "resetToken", "value": "RESET_TOKEN", "type": "string" },
+    { "key": "verifyToken", "value": "VERIFY_TOKEN", "type": "string" },
+    { "key": "merchantId", "value": "MERCHANT_OBJECT_ID", "type": "string" },
+    { "key": "ownerId", "value": "OWNER_OBJECT_ID", "type": "string" },
+    { "key": "identityProviderId", "value": "IDENTITY_PROVIDER_OBJECT_ID", "type": "string" },
+    { "key": "identityProviderId2", "value": "IDENTITY_PROVIDER_OBJECT_ID_2", "type": "string" },
+    { "key": "verificationId", "value": "VERIFICATION_OBJECT_ID", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "🔐 Admin Auth",
+      "description": "Authentication, password management, MFA, sessions, account status, profile, devices. Mounted at /admin-auth.",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/login", "host": ["{{baseUrl}}"], "path": ["admin-auth", "login"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"emailId\": \"admin@example.com\",\n  \"password\": \"Admin@1234\"\n}"
+                },
+                "description": "Authenticate admin and receive JWT token. Copy the returned `token` into the `jwt` collection variable."
+              }
+            },
+            {
+              "name": "Register Admin",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/register", "host": ["{{baseUrl}}"], "path": ["admin-auth", "register"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"emailId\": \"newadmin@example.com\",\n  \"password\": \"Admin@1234\",\n  \"phoneNumber\": \"+12025551234\",\n  \"role\": \"admin\"\n}"
+                },
+                "description": "Register a new admin user. Requires Super Admin privileges."
+              }
+            },
+            {
+              "name": "Verify MFA (Login)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/verify-mfa", "host": ["{{baseUrl}}"], "path": ["admin-auth", "verify-mfa"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"mfaCode\": \"123456\"\n}"
+                },
+                "description": "Submit MFA code after initial login when MFA is required."
+              }
+            },
+            {
+              "name": "Logout",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/logout", "host": ["{{baseUrl}}"], "path": ["admin-auth", "logout"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sessionToken\": \"SESSION_TOKEN_HERE\"\n}"
+                },
+                "description": "Logout from the current session."
+              }
+            },
+            {
+              "name": "Logout All Sessions",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/admin-auth/logout-all", "host": ["{{baseUrl}}"], "path": ["admin-auth", "logout-all"] },
+                "description": "Invalidate all active sessions for the current admin."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Password Management",
+          "item": [
+            {
+              "name": "Change Password",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/change-password", "host": ["{{baseUrl}}"], "path": ["admin-auth", "change-password"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"Admin@1234\",\n  \"newPassword\": \"NewAdmin@5678\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Forgot Password",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["admin-auth", "forgot-password"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"emailId\": \"admin@example.com\"\n}"
+                },
+                "description": "Request a password reset email."
+              }
+            },
+            {
+              "name": "Verify Reset Token",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/reset-password/{{resetToken}}", "host": ["{{baseUrl}}"], "path": ["admin-auth", "reset-password", "{{resetToken}}"] },
+                "description": "Validate a password reset token before submitting new password."
+              }
+            },
+            {
+              "name": "Reset Password",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/reset-password", "host": ["{{baseUrl}}"], "path": ["admin-auth", "reset-password"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"newPassword\": \"NewAdmin@5678\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "MFA",
+          "item": [
+            {
+              "name": "Setup MFA",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/mfa/setup", "host": ["{{baseUrl}}"], "path": ["admin-auth", "mfa", "setup"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"method\": \"totp\"\n}"
+                },
+                "description": "Initiate MFA setup. Returns a secret and QR code URI for TOTP apps."
+              }
+            },
+            {
+              "name": "Verify MFA Setup",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/mfa/verify-setup", "host": ["{{baseUrl}}"], "path": ["admin-auth", "mfa", "verify-setup"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"verificationCode\": \"123456\"\n}"
+                },
+                "description": "Confirm MFA setup with 6-digit TOTP code. Returns backup codes on success."
+              }
+            },
+            {
+              "name": "Disable MFA",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/mfa/disable", "host": ["{{baseUrl}}"], "path": ["admin-auth", "mfa", "disable"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"Admin@1234\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Regenerate Backup Codes",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/mfa/backup-codes", "host": ["{{baseUrl}}"], "path": ["admin-auth", "mfa", "backup-codes"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"Admin@1234\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Session Management",
+          "item": [
+            {
+              "name": "Get Active Sessions",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/sessions", "host": ["{{baseUrl}}"], "path": ["admin-auth", "sessions"] }
+              }
+            },
+            {
+              "name": "Validate Session",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/sessions/validate", "host": ["{{baseUrl}}"], "path": ["admin-auth", "sessions", "validate"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sessionToken\": \"SESSION_TOKEN_HERE\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Invalidate Session",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "{{baseUrl}}/admin-auth/sessions/{{sessionId}}", "host": ["{{baseUrl}}"], "path": ["admin-auth", "sessions", "{{sessionId}}"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Email & Phone Verification",
+          "item": [
+            {
+              "name": "Send Email Verification",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/admin-auth/email/send-verification", "host": ["{{baseUrl}}"], "path": ["admin-auth", "email", "send-verification"] }
+              }
+            },
+            {
+              "name": "Verify Email",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/email/verify/{{verifyToken}}", "host": ["{{baseUrl}}"], "path": ["admin-auth", "email", "verify", "{{verifyToken}}"] }
+              }
+            },
+            {
+              "name": "Send Phone Verification",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/admin-auth/phone/send-verification", "host": ["{{baseUrl}}"], "path": ["admin-auth", "phone", "send-verification"] }
+              }
+            },
+            {
+              "name": "Verify Phone",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/phone/verify", "host": ["{{baseUrl}}"], "path": ["admin-auth", "phone", "verify"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"verificationCode\": \"123456\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Account Status",
+          "item": [
+            {
+              "name": "Lock Account",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/account/lock", "host": ["{{baseUrl}}"], "path": ["admin-auth", "account", "lock"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"reason\": \"Suspicious activity detected\",\n  \"durationMinutes\": 60\n}"
+                }
+              }
+            },
+            {
+              "name": "Unlock Account",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/account/unlock", "host": ["{{baseUrl}}"], "path": ["admin-auth", "account", "unlock"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Suspend Account",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/account/suspend", "host": ["{{baseUrl}}"], "path": ["admin-auth", "account", "suspend"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"reason\": \"Policy violation\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Activate Account",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/account/activate", "host": ["{{baseUrl}}"], "path": ["admin-auth", "account", "activate"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Delete Account (Soft)",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/account/delete", "host": ["{{baseUrl}}"], "path": ["admin-auth", "account", "delete"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"reason\": \"Account closure requested by user\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Security Questions",
+          "item": [
+            {
+              "name": "Set Security Questions",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/security-questions/set", "host": ["{{baseUrl}}"], "path": ["admin-auth", "security-questions", "set"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"questions\": [\n    { \"question\": \"What is your mother's maiden name?\", \"answer\": \"Smith\" },\n    { \"question\": \"What was the name of your first pet?\", \"answer\": \"Buddy\" }\n  ]\n}"
+                }
+              }
+            },
+            {
+              "name": "Verify Security Answer",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/security-questions/verify", "host": ["{{baseUrl}}"], "path": ["admin-auth", "security-questions", "verify"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"question\": \"What is your mother's maiden name?\",\n  \"answer\": \"Smith\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Audit & History",
+          "item": [
+            {
+              "name": "Log Admin Action",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/audit/log-action", "host": ["{{baseUrl}}"], "path": ["admin-auth", "audit", "log-action"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"USER_APPROVED\",\n  \"resourceType\": \"user\",\n  \"resourceId\": \"{{userId}}\",\n  \"details\": \"Approved user KYC\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Get Login History",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/admin-auth/audit/login-history?limit=50",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin-auth", "audit", "login-history"],
+                  "query": [{ "key": "limit", "value": "50" }]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Logs",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/admin-auth/audit/logs?limit=100&action=&resourceType=&severity=&startDate=&endDate=",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin-auth", "audit", "logs"],
+                  "query": [
+                    { "key": "limit", "value": "100" },
+                    { "key": "action", "value": "", "disabled": true },
+                    { "key": "resourceType", "value": "", "disabled": true },
+                    { "key": "severity", "value": "", "disabled": true },
+                    { "key": "startDate", "value": "", "disabled": true },
+                    { "key": "endDate", "value": "", "disabled": true }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profile Management",
+          "item": [
+            {
+              "name": "Get My Profile",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/profile", "host": ["{{baseUrl}}"], "path": ["admin-auth", "profile"] }
+              }
+            },
+            {
+              "name": "Update My Profile",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/profile", "host": ["{{baseUrl}}"], "path": ["admin-auth", "profile"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"+12025551234\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Get Admin by Email",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/profile/by-email/admin@example.com", "host": ["{{baseUrl}}"], "path": ["admin-auth", "profile", "by-email", "admin@example.com"] }
+              }
+            },
+            {
+              "name": "Check Permission",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/permissions/manage_users", "host": ["{{baseUrl}}"], "path": ["admin-auth", "permissions", "manage_users"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Device Management",
+          "item": [
+            {
+              "name": "Get Trusted Devices",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin-auth/devices", "host": ["{{baseUrl}}"], "path": ["admin-auth", "devices"] }
+              }
+            },
+            {
+              "name": "Trust Device",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": { "raw": "{{baseUrl}}/admin-auth/devices/trust", "host": ["{{baseUrl}}"], "path": ["admin-auth", "devices", "trust"] },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"deviceId\": \"{{deviceId}}\"\n}"
+                }
+              }
+            },
+            {
+              "name": "Remove Trusted Device",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "{{baseUrl}}/admin-auth/devices/{{deviceId}}", "host": ["{{baseUrl}}"], "path": ["admin-auth", "devices", "{{deviceId}}"] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔑 Login",
+      "description": "Legacy login controller. Mounted at /login.",
+      "item": [
+        {
+          "name": "Admin Login (Legacy)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/login/adminLogin", "host": ["{{baseUrl}}"], "path": ["login", "adminLogin"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailId\": \"admin@example.com\",\n  \"password\": \"Admin@1234\"\n}"
+            },
+            "description": "Authenticate admin and receive a JWT cookie. Sets `jwt` cookie used by authMiddleware."
+          }
+        },
+        {
+          "name": "Update Admin Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/login/update-admin-user", "host": ["{{baseUrl}}"], "path": ["login", "update-admin-user"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{userId}}\",\n  \"password\": \"NewAdmin@5678\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏦 Accounts",
+      "description": "Admin and user account creation. Mounted at /accounts.",
+      "item": [
+        {
+          "name": "Create Admin Accounts",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/accounts/create", "host": ["{{baseUrl}}"], "path": ["accounts", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userName\": \"adminuser\",\n  \"emailId\": \"admin@example.com\"\n}"
+            },
+            "description": "Creates virtual account, fee account, and USDC wallet for admin."
+          }
+        },
+        {
+          "name": "Create User Accounts",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/accounts/create-user-accounts", "host": ["{{baseUrl}}"], "path": ["accounts", "create-user-accounts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"userName\": \"merchant\",\n  \"emailId\": \"merchant@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Approve Linked Accounts",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/accounts/approve-linked-accounts", "host": ["{{baseUrl}}"], "path": ["accounts", "approve-linked-accounts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"accountId\": \"LINKED_ACCOUNT_ID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Credit Daily Interest",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/accounts/credit-daily-interest", "host": ["{{baseUrl}}"], "path": ["accounts", "credit-daily-interest"] },
+            "description": "Trigger daily interest credit to all eligible accounts."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 KYC",
+      "description": "KYC status management. Mounted at /kyc.",
+      "item": [
+        {
+          "name": "Update KYC Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/kyc/update-status", "host": ["{{baseUrl}}"], "path": ["kyc", "update-status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"status\": \"approved\",\n  \"reason\": \"All documents verified\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get KYC Status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/kyc/status/{{userId}}", "host": ["{{baseUrl}}"], "path": ["kyc", "status", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Get Inquiry Info",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/kyc/getInquiryInfo?inquiryId={{inquiryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["kyc", "getInquiryInfo"],
+              "query": [{ "key": "inquiryId", "value": "{{inquiryId}}", "description": "Persona inquiry ID" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💸 Transactions",
+      "description": "Transaction operations. Mounted at /transactions.",
+      "item": [
+        {
+          "name": "Approve Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/approve-transaction", "host": ["{{baseUrl}}"], "path": ["transactions", "approve-transaction"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"TRANSACTION_ID\",\n  \"userId\": \"{{userId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verify Wallet Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/verify-wallet-transaction", "host": ["{{baseUrl}}"], "path": ["transactions", "verify-wallet-transaction"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"TRANSACTION_ID\",\n  \"walletId\": \"WALLET_ID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Fund User Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/fund-user-wallet", "host": ["{{baseUrl}}"], "path": ["transactions", "fund-user-wallet"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"amount\": 100.00,\n  \"currency\": \"USD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Webhook Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/add-webhook-transaction", "host": ["{{baseUrl}}"], "path": ["transactions", "add-webhook-transaction"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.completed\",\n  \"data\": {}\n}"
+            },
+            "description": "Ingest transactions received from external webhooks."
+          }
+        },
+        {
+          "name": "Verify Fee Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/verify-fee-transaction", "host": ["{{baseUrl}}"], "path": ["transactions", "verify-fee-transaction"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"TRANSACTION_ID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verify Currency Transfer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/transactions/verify-currency-transfer", "host": ["{{baseUrl}}"], "path": ["transactions", "verify-currency-transfer"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"TRANSACTION_ID\",\n  \"currency\": \"USDC\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Sweep User Accounts",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/transactions/sweep-user-accounts", "host": ["{{baseUrl}}"], "path": ["transactions", "sweep-user-accounts"] },
+            "description": "Sweep user accounts and consolidate funds."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Account Providers",
+      "description": "Bank/payment service provider management. Mounted at /account-providers.",
+      "item": [
+        {
+          "name": "Create Provider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-providers", "host": ["{{baseUrl}}"], "path": ["account-providers"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerName\": \"Checkbook\",\n  \"providerCode\": \"CHECKBOOK\",\n  \"supportedCurrencies\": [\n    { \"currencyCode\": \"USD\", \"isEnabled\": true }\n  ],\n  \"eligibility\": {\n    \"usUsers\": true,\n    \"nonUsUsers\": false\n  },\n  \"credentials\": {\n    \"apiKey\": \"YOUR_API_KEY\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Providers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/account-providers?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-providers"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "isEnabled", "value": "true", "disabled": true },
+                { "key": "providerCode", "value": "", "disabled": true },
+                { "key": "currencyCode", "value": "", "disabled": true },
+                { "key": "usUsers", "value": "", "disabled": true },
+                { "key": "nonUsUsers", "value": "", "disabled": true },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Provider Stats",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-providers/stats", "host": ["{{baseUrl}}"], "path": ["account-providers", "stats"] }
+          }
+        },
+        {
+          "name": "Get Eligible Providers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/account-providers/eligible?currencyCode=USD&isUsUser=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-providers", "eligible"],
+              "query": [
+                { "key": "currencyCode", "value": "USD" },
+                { "key": "isUsUser", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Provider by Code",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-providers/code/CHECKBOOK", "host": ["{{baseUrl}}"], "path": ["account-providers", "code", "CHECKBOOK"] }
+          }
+        },
+        {
+          "name": "Get Provider by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}"] }
+          }
+        },
+        {
+          "name": "Update Provider",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerName\": \"Checkbook Updated\",\n  \"isEnabled\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Toggle Provider Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}/toggle", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}", "toggle"] }
+          }
+        },
+        {
+          "name": "Update Provider Health",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}/health", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}", "health"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"healthStatus\": \"healthy\"\n}"
+            },
+            "description": "Valid values: healthy | degraded | down | unknown"
+          }
+        },
+        {
+          "name": "Add Currency to Provider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}/currencies", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}", "currencies"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currencyCode\": \"EUR\",\n  \"isEnabled\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Currency from Provider",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}/currencies/EUR", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}", "currencies", "EUR"] }
+          }
+        },
+        {
+          "name": "Soft Delete Provider",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}"] }
+          }
+        },
+        {
+          "name": "Permanently Delete Provider",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/account-providers/{{providerId}}/permanent", "host": ["{{baseUrl}}"], "path": ["account-providers", "{{providerId}}", "permanent"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📁 Account Requests",
+      "description": "Bank account request lifecycle management. Mounted at /account-requests.",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/dashboard/statistics", "host": ["{{baseUrl}}"], "path": ["account-requests", "dashboard", "statistics"] }
+          }
+        },
+        {
+          "name": "Search Requests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/account-requests/search?q=john",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-requests", "search"],
+              "query": [{ "key": "q", "value": "john" }]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Requests",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/pending", "host": ["{{baseUrl}}"], "path": ["account-requests", "pending"] }
+          }
+        },
+        {
+          "name": "Get Requests Requiring Action",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/requires-action", "host": ["{{baseUrl}}"], "path": ["account-requests", "requires-action"] }
+          }
+        },
+        {
+          "name": "Get Requests by Status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/status/pending", "host": ["{{baseUrl}}"], "path": ["account-requests", "status", "pending"] },
+            "description": "Replace `pending` with: pending | approved | rejected | cancelled | processing"
+          }
+        },
+        {
+          "name": "Get Requests by User",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["account-requests", "user", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Get All Requests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/account-requests?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-requests"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number (default: 1)" },
+                { "key": "limit", "value": "20", "description": "Items per page (default: 20)" },
+                { "key": "status", "value": "", "description": "Filter by status: pending | approved | rejected | cancelled | processing", "disabled": true },
+                { "key": "userId", "value": "", "description": "Filter by user ObjectId", "disabled": true },
+                { "key": "priority", "value": "", "description": "Filter by priority: low | medium | high | critical", "disabled": true },
+                { "key": "currency", "value": "", "description": "Filter by currency code, e.g. USD", "disabled": true },
+                { "key": "providerId", "value": "", "description": "Filter by assigned provider ObjectId", "disabled": true },
+                { "key": "startDate", "value": "", "description": "Filter requests on or after this date (ISO 8601)", "disabled": true },
+                { "key": "endDate", "value": "", "description": "Filter requests on or before this date (ISO 8601)", "disabled": true }
+              ]
+            },
+            "description": "Get paginated bank account requests with optional filters.\n\nPagination is returned inside `meta.pagination`:\n```json\n{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Bank account requests retrieved successfully\",\n  \"data\": [...],\n  \"meta\": {\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 5,\n      \"totalRecords\": 100,\n      \"limit\": 20,\n      \"hasNextPage\": true,\n      \"hasPrevPage\": false\n    }\n  }\n}\n```"
+          }
+        },
+        {
+          "name": "Get Request by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}"] }
+          }
+        },
+        {
+          "name": "Approve Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/approve", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "approve"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"All documents verified and approved.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reject Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/reject", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "reject"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Incomplete documentation provided.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/cancel", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "cancel"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Cancelled at user's request.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Process Bank Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/process", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "process"] },
+            "description": "Create Checkbook account for the approved request."
+          }
+        },
+        {
+          "name": "Request Additional Documents",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/request-documents", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "request-documents"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documents\": [\n    {\n      \"label\": \"Government ID\",\n      \"name\": \"government_id\",\n      \"type\": \"document\",\n      \"description\": \"A valid, non-expired government-issued photo ID (passport, driver's licence, national ID).\",\n      \"isRequired\": true\n    },\n    {\n      \"label\": \"Proof of Address\",\n      \"name\": \"proof_of_address\",\n      \"type\": \"document\",\n      \"description\": \"A utility bill or bank statement dated within the last 90 days.\",\n      \"isRequired\": true\n    }\n  ]\n}"
+            },
+            "description": "Request one or more additional documents from the merchant. Each document requires a label and name; type, description, and isRequired are optional."
+          }
+        },
+        {
+          "name": "Review Additional Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/documents/{{documentId}}/review", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "documents", "{{documentId}}", "review"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\",\n  \"notes\": \"Document looks good.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Edit Additional Document",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/documents/{{documentId}}", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "documents", "{{documentId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Updated Government ID\",\n  \"name\": \"government_id_updated\",\n  \"type\": \"document\",\n  \"description\": \"Please provide a valid, non-expired government-issued photo ID.\",\n  \"isRequired\": true\n}"
+            },
+            "description": "Edit the metadata (label, name, type, description, isRequired) of an additional document. Only documents with status 'pending' or 'submitted' can be edited. At least one field must be provided."
+          }
+        },
+        {
+          "name": "Update Document Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/documents/{{documentId}}/status", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "documents", "{{documentId}}", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\",\n  \"reason\": \"The document provided is expired. Please submit a valid, non-expired document.\"\n}"
+            },
+            "description": "Update the status of an additional document. Valid statuses: pending, submitted, approved, rejected, not_submitted. Reason is required when status is 'rejected'."
+          }
+        },
+        {
+          "name": "Delete Additional Document",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/documents/{{documentId}}", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "documents", "{{documentId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Document requirement removed as it is no longer needed.\"\n}"
+            },
+            "description": "Delete an additional document from the request. Only documents with status 'pending' or 'rejected' can be deleted. Reason is optional."
+          }
+        },
+        {
+          "name": "Add Internal Note",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/notes", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "notes"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Reviewed SSN and passport – matches records.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Log Communication",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/communications", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "communications"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"direction\": \"outbound\",\n  \"subject\": \"Account Request Update\",\n  \"message\": \"Your request is under review.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Assign Service Provider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/assign-provider", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "assign-provider"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerId\": \"{{providerId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Request Priority",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/priority", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "priority"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": \"high\"\n}"
+            },
+            "description": "Valid values: low | medium | high | critical"
+          }
+        },
+        {
+          "name": "Update Request Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/account-requests/{{requestId}}/status", "host": ["{{baseUrl}}"], "path": ["account-requests", "{{requestId}}", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"reason\": \"Initiating account creation.\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👔 Merchant Management",
+      "description": "Complete merchant management module with KYC workflows, document verification, account management, and security actions. 31 endpoints for managing merchant lifecycle. Mounted at /merchants.",
+      "item": [
+        {
+          "name": "Merchant Listing & Details",
+          "item": [
+            {
+              "name": "Get All Merchants (Paginated)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants?page=1&limit=10&isActive=true&sortBy=createdAt&sortOrder=desc",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "Page number (default: 1)"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "description": "Items per page (default: 10, max: 100)"
+                    },
+                    {
+                      "key": "isActive",
+                      "value": "true",
+                      "description": "Filter by active status"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "description": "Sort field: createdAt, emailId, businessName"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "desc",
+                      "description": "Sort order: asc, desc"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search in email, mobile, business name, tagId",
+                      "disabled": true
+                    },
+                    {
+                      "key": "kycStatus",
+                      "value": "",
+                      "description": "Filter by KYC status",
+                      "disabled": true
+                    },
+                    {
+                      "key": "personaStatus",
+                      "value": "",
+                      "description": "Filter by Persona status",
+                      "disabled": true
+                    },
+                    {
+                      "key": "isVerified",
+                      "value": "",
+                      "description": "Filter by verified status",
+                      "disabled": true
+                    },
+                    {
+                      "key": "country",
+                      "value": "",
+                      "description": "Filter by citizenship",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Retrieve paginated list of merchants with filtering and search capabilities.\n\n**Rate Limit:** 30 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Search Merchants",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants?search=john&page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants"],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "john",
+                      "description": "Search keyword"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Search merchants by email, mobile number, business name, or tagId"
+              },
+              "response": []
+            },
+            {
+              "name": "Filter by KYC Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants?kycStatus=Pending&page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants"],
+                  "query": [
+                    {
+                      "key": "kycStatus",
+                      "value": "Pending",
+                      "description": "Not Submitted | Pending | Approved | Rejected"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Filter merchants by KYC status"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Merchant Details",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}"]
+                },
+                "description": "Get complete merchant profile with all sections:\n- Basic Profile\n- Security\n- Identity & KYC\n- Business Info\n- Addresses\n- Intended Use\n- Compliance\n- KYC Status\n\n**Rate Limit:** 30 requests/minute"
+              },
+              "response": []
+            }
+          ],
+          "description": "Endpoints for listing and viewing merchant details"
+        },
+        {
+          "name": "Account Management",
+          "item": [
+            {
+              "name": "Activate Merchant",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"All KYC checks completed successfully\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/activate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "activate"]
+                },
+                "description": "Activate a merchant account.\n\n**Permission Required:** merchant.edit\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Deactivate Merchant",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Suspicious activity detected. Account under review.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/deactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "deactivate"]
+                },
+                "description": "Deactivate a merchant account.\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.edit\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Soft Delete Merchant",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Duplicate account. Original account ID: 507f1f77bcf86cd799439011\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/soft-delete",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "soft-delete"]
+                },
+                "description": "Soft delete a merchant (must be deactivated first).\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.delete\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Restore Merchant",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/restore",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "restore"]
+                },
+                "description": "Restore a soft-deleted merchant.\n\n**Permission Required:** merchant.delete\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            }
+          ],
+          "description": "Endpoints for merchant account activation, deactivation, and deletion"
+        },
+        {
+          "name": "Security Actions",
+          "item": [
+            {
+              "name": "Reset Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sendEmail\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/reset-password",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "reset-password"]
+                },
+                "description": "Initiate password reset for merchant.\n\n**Permission Required:** merchant.security\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Unlock Account",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/unlock-account",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "unlock-account"]
+                },
+                "description": "Reset incorrect login attempts and unlock account.\n\n**Permission Required:** merchant.security\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Reset 2FA",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"User lost authenticator device and backup codes\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/reset-2fa",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "reset-2fa"]
+                },
+                "description": "Disable and reset 2FA for merchant.\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.security\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            }
+          ],
+          "description": "Security-related actions for merchant accounts"
+        },
+        {
+          "name": "SSN & Passport Verification",
+          "item": [
+            {
+              "name": "Approve SSN",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"source\": \"IRS Database\",\n  \"notes\": \"SSN verified successfully via IRS database cross-check\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-ssn",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "approve-ssn"]
+                },
+                "description": "Approve SSN verification.\n\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Reject SSN",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"SSN does not match IRS records. Please verify and resubmit correct SSN.\",\n  \"requiresResubmission\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-ssn",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "reject-ssn"]
+                },
+                "description": "Reject SSN verification.\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Approve Passport",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"source\": \"State Department Database\",\n  \"notes\": \"Passport verified against State Department records\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-passport",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "approve-passport"]
+                },
+                "description": "Approve passport verification.\n\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Reject Passport",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Passport image is blurry and expiry date is not clearly visible. Please upload a high-quality scan.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-passport",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "reject-passport"]
+                },
+                "description": "Reject passport verification.\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            }
+          ],
+          "description": "SSN and Passport verification endpoints"
+        },
+        {
+          "name": "Document Approvals",
+          "item": [
+            {
+              "name": "Identity Proof",
+              "item": [
+                {
+                  "name": "Approve Identity Proof",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Driver's license verified. All details are clear and valid.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-identity-proof",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-identity-proof"]
+                    },
+                    "description": "Approve identity proof documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Identity Proof",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Document is expired. Please submit a valid, non-expired ID.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-identity-proof",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-identity-proof"]
+                    },
+                    "description": "Reject identity proof documents"
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Address Proof",
+              "item": [
+                {
+                  "name": "Approve Address Proof",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Bank statement verified. Address matches registration.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-address-proof",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-address-proof"]
+                    },
+                    "description": "Approve address proof documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Address Proof",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Document is older than 3 months. Please submit a recent address proof.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-address-proof",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-address-proof"]
+                    },
+                    "description": "Reject address proof documents"
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Utility Bill",
+              "item": [
+                {
+                  "name": "Approve Utility Bill",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Electric bill verified. Recent and address matches.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-utility-bill",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-utility-bill"]
+                    },
+                    "description": "Approve utility bill documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Utility Bill",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Bill is not in merchant's name. Please submit a utility bill in your name.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-utility-bill",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-utility-bill"]
+                    },
+                    "description": "Reject utility bill documents"
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Business Documents",
+              "item": [
+                {
+                  "name": "Approve Business Documents",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Certificate of Incorporation verified with state records.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-business-documents",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-business-documents"]
+                    },
+                    "description": "Approve business registration documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Business Documents",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Business name on document does not match registration. Please verify and resubmit.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-business-documents",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-business-documents"]
+                    },
+                    "description": "Reject business registration documents"
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Business Logo",
+              "item": [
+                {
+                  "name": "Approve Business Logo",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Logo approved. Meets quality standards.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-business-logo",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-business-logo"]
+                    },
+                    "description": "Approve business logo"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Business Logo",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Logo quality is too low. Please upload a high-resolution image (min 500x500px).\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-business-logo",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-business-logo"]
+                    },
+                    "description": "Reject business logo"
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Compliance Documents",
+              "item": [
+                {
+                  "name": "Approve Compliance Officer",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"Compliance officer credentials verified.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-compliance-officer",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-compliance-officer"]
+                    },
+                    "description": "Approve compliance officer documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject Compliance Officer",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"Compliance officer credentials are incomplete. Please provide full certification details.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-compliance-officer",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-compliance-officer"]
+                    },
+                    "description": "Reject compliance officer documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Approve AML Document",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"notes\": \"AML program documentation is comprehensive and meets requirements.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-aml-document",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "approve-aml-document"]
+                    },
+                    "description": "Approve AML program documents"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Reject AML Document",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"reason\": \"AML program documentation is incomplete. Missing risk assessment procedures.\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-aml-document",
+                      "host": ["{{baseUrl}}"],
+                      "path": ["merchants", "{{merchantId}}", "reject-aml-document"]
+                    },
+                    "description": "Reject AML program documents"
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ],
+          "description": "Document approval and rejection endpoints"
+        },
+        {
+          "name": "KYC Status Management",
+          "item": [
+            {
+              "name": "Update KYC Section Status",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"section\": \"personalInfo\",\n  \"status\": \"Approved\",\n  \"reason\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/update-kyc-section",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "update-kyc-section"]
+                },
+                "description": "Update KYC section status.\n\n**Sections:**\n- personalInfo\n- businessInfo\n- physicalAddress\n- intendedUse\n- complianceDetails\n\n**Status:**\n- Not Submitted\n- Pending\n- Approved\n- Rejected\n\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Update KYC Section (Reject)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"section\": \"businessInfo\",\n  \"status\": \"Rejected\",\n  \"reason\": \"Business entity type mismatch. Please update business type to match registration documents.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/update-kyc-section",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "update-kyc-section"]
+                },
+                "description": "Reject a KYC section with reason"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Persona Status",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"personal\",\n  \"inqueryId\": \"inq_abc123xyz789\",\n  \"status\": \"Approved\",\n  \"reason\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/update-persona-status",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "update-persona-status"]
+                },
+                "description": "Update Persona KYC status.\n\n**Type:**\n- personal\n- business\n\n**Status:**\n- Not Submitted\n- Pending\n- Approved\n- Rejected\n\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Persona Status (Reject)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"business\",\n  \"inqueryId\": \"inq_business_456\",\n  \"status\": \"Rejected\",\n  \"reason\": \"Business verification failed. Additional documentation required.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/update-persona-status",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "update-persona-status"]
+                },
+                "description": "Reject Persona KYC with reason"
+              },
+              "response": []
+            }
+          ],
+          "description": "KYC and Persona status update endpoints"
+        },
+        {
+          "name": "Beneficial Owner Management",
+          "item": [
+            {
+              "name": "Approve Beneficial Owner",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/approve-beneficial-owner/{{ownerId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "approve-beneficial-owner", "{{ownerId}}"]
+                },
+                "description": "Approve a beneficial owner.\n\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            },
+            {
+              "name": "Reject Beneficial Owner",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Ownership percentage verification failed. Please provide additional documentation.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/merchants/{{merchantId}}/reject-beneficial-owner/{{ownerId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["merchants", "{{merchantId}}", "reject-beneficial-owner", "{{ownerId}}"]
+                },
+                "description": "Reject a beneficial owner.\n\n**Required Field:** reason (10-500 characters)\n**Permission Required:** merchant.approve\n**Rate Limit:** 10 requests/minute"
+              },
+              "response": []
+            }
+          ],
+          "description": "Beneficial owner approval endpoints"
+        }
+      ]
+    },
+    {
+      "name": "📁 Storage",
+      "description": "Document storage utilities. Mounted at /storage.",
+      "item": [
+        {
+          "name": "Get Document View URL",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/storage/document-url",
+              "host": ["{{baseUrl}}"],
+              "path": ["storage", "document-url"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filePath\": \"users/{{userId}}/kyc/passport.jpg\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Generate a temporary pre-signed S3 URL to view a user document.\n\n**Auth:** Admin JWT (cookie `adminToken`)\n**Body:** `filePath` – S3 key of the target file.\n**Response:** `url` – signed URL valid for 5 seconds."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": {
+                  "raw": "{{baseUrl}}/storage/document-url",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["storage", "document-url"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filePath\": \"users/{{userId}}/kyc/passport.jpg\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                }
+              },
+              "body": "{\n  \"data\": {\n    \"url\": \"https://s3.amazonaws.com/bucket/users/userId/kyc/passport.jpg?X-Amz-Signature=...\",\n    \"expiresInSeconds\": 5\n  },\n  \"meta\": {\n    \"status\": 200,\n    \"success\": true,\n    \"message\": \"Document URL generated successfully.\"\n  }\n}"
+            },
+            {
+              "name": "Missing filePath",
+              "status": "Bad Request",
+              "code": 400,
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": {
+                  "raw": "{{baseUrl}}/storage/document-url",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["storage", "document-url"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": { "raw": { "language": "json" } }
+                }
+              },
+              "body": "{\n  \"data\": null,\n  \"meta\": {\n    \"status\": 400,\n    \"success\": false,\n    \"message\": \"filePath is required and must be a non-empty string.\"\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "url": {
+                  "raw": "{{baseUrl}}/storage/document-url",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["storage", "document-url"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filePath\": \"users/{{userId}}/kyc/passport.jpg\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                }
+              },
+              "body": "{\n  \"data\": null,\n  \"meta\": {\n    \"status\": 401,\n    \"success\": false,\n    \"message\": \"Authentication required. Please log in.\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔍 Identity Verification Providers",
+      "description": "CRUD management for identity verification providers (Persona, Sumsub, Onfido, etc.).\nMounted at /admin/identity-providers.\nAll endpoints require a valid admin JWT cookie.",
+      "item": [
+        {
+          "name": "Create Provider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Persona\",\n  \"apiKey\": \"sk_live_persona_api_key_here\",\n  \"templateId\": {\n    \"US\": \"tmpl_us_kyc_v2\",\n    \"GB\": \"tmpl_gb_kyc_v1\",\n    \"default\": \"tmpl_global_kyc\"\n  },\n  \"isUSProvider\": true,\n  \"isNonUSProvider\": true,\n  \"priorityUS\": 1,\n  \"priorityNonUS\": 2,\n  \"isActive\": true,\n  \"notSupportedCountries\": [\n    { \"code\": \"CN\", \"reason\": \"Not licensed\" },\n    \"RU\"\n  ],\n  \"environment\": \"sandbox\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a new identity verification provider. The `apiKey` is encrypted at rest and never returned in plain text. `priorityUS` is required when `isUSProvider=true`; `priorityNonUS` is required when `isNonUSProvider=true`."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"Identity verification provider created successfully\",\n  \"data\": {\n    \"_id\": \"{{identityProviderId}}\",\n    \"name\": \"Persona\",\n    \"apiKeyMasked\": \"***...here\",\n    \"templateId\": { \"US\": \"tmpl_us_kyc_v2\", \"GB\": \"tmpl_gb_kyc_v1\", \"default\": \"tmpl_global_kyc\" },\n    \"isUSProvider\": true,\n    \"isNonUSProvider\": true,\n    \"priorityUS\": 1,\n    \"priorityNonUS\": 2,\n    \"isActive\": true,\n    \"health\": { \"status\": \"healthy\", \"manualOverride\": false },\n    \"notSupportedCountries\": [{ \"code\": \"CN\", \"reason\": \"Not licensed\" }, \"RU\"],\n    \"environment\": \"sandbox\"\n  }\n}"
+            },
+            {
+              "name": "400 Duplicate Name",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 400,\n  \"message\": \"A provider with this name already exists in the specified environment\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Providers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers?isActive=true&environment=sandbox&country=US",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers"],
+              "query": [
+                { "key": "isActive", "value": "true", "description": "Filter by active flag (true/false)" },
+                { "key": "environment", "value": "sandbox", "description": "sandbox or production" },
+                { "key": "country", "value": "US", "description": "ISO 3166-1 alpha-2 — returns only providers that support this country" }
+              ]
+            },
+            "description": "List all providers sorted by priority ascending. `apiKey` is never returned — only `apiKeyMasked`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Identity verification providers retrieved successfully\",\n  \"data\": [\n    {\n      \"_id\": \"{{identityProviderId}}\",\n      \"name\": \"Persona\",\n      \"apiKeyMasked\": \"***...here\",\n      \"isUSProvider\": true,\n      \"isNonUSProvider\": true,\n      \"priorityUS\": 1,\n      \"priorityNonUS\": 2,\n      \"isActive\": true,\n      \"health\": { \"status\": \"healthy\", \"manualOverride\": false },\n      \"environment\": \"sandbox\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Provider by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers/{{identityProviderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers", "{{identityProviderId}}"]
+            },
+            "description": "Retrieve a single provider. Soft-deleted providers return 404."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Provider retrieved successfully\",\n  \"data\": {\n    \"_id\": \"{{identityProviderId}}\",\n    \"name\": \"Persona\",\n    \"apiKeyMasked\": \"***...here\",\n    \"templateId\": { \"US\": \"tmpl_us_kyc_v2\", \"default\": \"tmpl_global_kyc\" },\n    \"isUSProvider\": true,\n    \"isNonUSProvider\": true,\n    \"priorityUS\": 1,\n    \"priorityNonUS\": 2,\n    \"isActive\": true,\n    \"health\": { \"status\": \"healthy\", \"lastCheckedAt\": null, \"manualOverride\": false },\n    \"notSupportedCountries\": [{ \"code\": \"CN\", \"reason\": \"Not licensed\" }],\n    \"environment\": \"sandbox\"\n  }\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 404,\n  \"message\": \"Provider not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Provider (Partial)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers/{{identityProviderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers", "{{identityProviderId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false,\n  \"priorityUS\": 3,\n  \"notSupportedCountries\": [\n    { \"code\": \"CN\", \"reason\": \"Not licensed\" },\n    { \"code\": \"IR\", \"reason\": \"Sanctions\" }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Partial update — only supplied fields are changed. If `apiKey` is included it is re-encrypted. Setting `isActive=false` does not cancel in-progress verifications."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Provider updated successfully\",\n  \"data\": { \"_id\": \"{{identityProviderId}}\", \"isActive\": false, \"priorityUS\": 3 }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Provider — Rotate API Key",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers/{{identityProviderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers", "{{identityProviderId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiKey\": \"sk_live_new_rotated_api_key\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Supply only `apiKey` to rotate the credential. The new key is encrypted at rest via the pre-save hook; the previous key is discarded."
+          }
+        },
+        {
+          "name": "Delete Provider (Soft)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers/{{identityProviderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers", "{{identityProviderId}}"]
+            },
+            "description": "Soft-delete: sets `isActive=false` and records `deletedAt`. Returns 409 if the provider has active (pending/in_progress/awaiting_result) verification tasks."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Provider deactivated successfully\"\n}"
+            },
+            {
+              "name": "409 Conflict — Active Tasks",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 409,\n  \"message\": \"Provider has 3 active verification task(s). Deactivate or reassign them before deleting.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Provider Health",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/identity-providers/{{identityProviderId}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "identity-providers", "{{identityProviderId}}", "health"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"degraded\",\n  \"message\": \"Intermittent timeouts observed on KYC endpoint\",\n  \"manualOverride\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Manually set provider health status. When `manualOverride=true`, automated health-check jobs will not overwrite this status. Set `manualOverride=false` to release the lock back to automated checks."
+          },
+          "response": [
+            {
+              "name": "200 OK — Lock health",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Provider health updated successfully\",\n  \"data\": {\n    \"health\": {\n      \"status\": \"degraded\",\n      \"message\": \"Intermittent timeouts observed on KYC endpoint\",\n      \"manualOverride\": true,\n      \"lastCheckedAt\": \"2026-03-14T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "200 OK — Release lock",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Provider health updated successfully\",\n  \"data\": {\n    \"health\": { \"status\": \"healthy\", \"manualOverride\": false }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "✅ Verification Requests (on Bank Requests)",
+      "description": "Admin-initiated identity verification tasks embedded inside bank account creation requests.\nMounted under /account-requests.\nAll endpoints require a valid admin JWT cookie.",
+      "item": [
+        {
+          "name": "Request Verifications",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/account-requests/{{requestId}}/verification-requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-requests", "{{requestId}}", "verification-requests"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verifications\": [\n    {\n      \"providerId\": \"{{identityProviderId}}\",\n      \"note\": \"Please complete KYC via Persona\",\n      \"dueDate\": \"2026-04-01T00:00:00Z\"\n    },\n    {\n      \"providerId\": \"{{identityProviderId2}}\",\n      \"note\": \"AML check required\"\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Queue one or more identity verification tasks on a bank account request. Creates one embedded `identityVerifications` entry per item with `status=pending`."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"Verification requests created successfully\",\n  \"data\": [\n    {\n      \"_id\": \"{{verificationId}}\",\n      \"providerId\": \"{{identityProviderId}}\",\n      \"status\": \"pending\",\n      \"requestedByAdminId\": null,\n      \"requestedByAdminName\": null,\n      \"note\": \"Please complete KYC via Persona\",\n      \"dueDate\": \"2026-04-01T00:00:00.000Z\",\n      \"requestedAt\": \"2026-03-14T08:00:00.000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "400 Invalid Provider",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 400,\n  \"message\": \"Provider {{identityProviderId}} not found or is inactive\"\n}"
+            },
+            {
+              "name": "404 Request Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 404,\n  \"message\": \"Bank account request not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Verification History (User)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/account-requests/user/{{userId}}/verification-history?status=pending&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-requests", "user", "{{userId}}", "verification-history"],
+              "query": [
+                { "key": "status", "value": "pending", "description": "pending | in_progress | awaiting_result | completed | failed | expired | cancelled" },
+                { "key": "providerId", "value": "", "description": "Filter by a specific provider ObjectId", "disabled": true },
+                { "key": "requestId", "value": "", "description": "Filter by a specific bank account request ObjectId", "disabled": true },
+                { "key": "fromDate", "value": "", "description": "Start of date range (ISO 8601)", "disabled": true },
+                { "key": "toDate", "value": "", "description": "End of date range (ISO 8601)", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Full paginated verification history for a user across all their bank account requests. Sorted by `requestedAt` descending. Supports filters: `status`, `providerId`, `requestId`, `fromDate`, `toDate`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Verification history retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{verificationId}}\",\n      \"requestId\": \"{{requestId}}\",\n      \"providerId\": \"{{identityProviderId}}\",\n      \"status\": \"pending\",\n      \"requestedByAdminId\": null,\n      \"requestedByAdminName\": null,\n      \"note\": \"Please complete KYC via Persona\",\n      \"dueDate\": \"2026-04-01T00:00:00.000Z\",\n      \"requestedAt\": \"2026-03-14T08:00:00.000Z\",\n      \"notifiedAt\": null,\n      \"startedAt\": null,\n      \"completedAt\": null,\n      \"verifiedId\": null,\n      \"failureReason\": null,\n      \"sessionId\": null,\n      \"webhookReceivedAt\": null,\n      \"resolvedProviderId\": null\n    }\n  ],\n  \"meta\": {\n    \"pagination\": {\n      \"total\": 42,\n      \"page\": 1,\n      \"limit\": 20,\n      \"totalPages\": 3\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

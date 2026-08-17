@@ -1,0 +1,216 @@
+{
+  "name": "Authentication",
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"emailId\": \"lalithbabu.l@meralot.com\",\n    \"password\": \"Admin@0123)\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin-auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin-auth",
+            "login"
+          ]
+        },
+        "description": "Authenticate admin and receive JWT token. Copy the returned `token` into the `jwt` collection variable."
+      },
+      "response": [
+        {
+          "name": "Login",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"emailId\": \"lalithbabu.l@meralot.com\",\n    \"password\": \"Admin@0123)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-auth",
+                "login"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Set-Cookie",
+              "value": "adminToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViOTY5MjUzYWNhOWU4ZGZmMTQ2MjkiLCJlbWFpbElkIjoibGFsaXRoYmFidS5sQG5pbGZlZS5jb20iLCJyb2xlcyI6WyI2OTk0MWUxMmEyYzcxMjg5ZGQzMzNmMGEiLCI2OTk0MWUxMmEyYzcxMjg5ZGQzMzNlZmIiXSwic2Vzc2lvblRva2VuIjoiMmVhMzk5NWEyZDMzM2M2YTgwZjcwYzc4ZGJlNTljYjExN2U3OGVlYWZlZTY4MWNiMTBjZjY1MmIxMjZhYzg2NSIsImlhdCI6MTc3MTk1NTM3MywiZXhwIjoxNzcyMDQxNzczfQ.yaTqG2aWSex3xWU13hhCrOeZ1A0RWiBEXKiIYRFFoFY; Max-Age=86400; Path=/; Expires=Wed, 25 Feb 2026 17:49:33 GMT; HttpOnly; SameSite=Strict"
+            },
+            {
+              "key": "Set-Cookie",
+              "value": "sessionToken=2ea3995a2d333c6a80f70c78dbe59cb117e78eeafee681cb10cf652b126ac865; Max-Age=86400; Path=/; Expires=Wed, 25 Feb 2026 17:49:33 GMT; HttpOnly; SameSite=Strict"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "2400"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"960-fJ0RYWPj8/JCvnsed9/0dwL74TA\""
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 24 Feb 2026 17:49:33 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"admin\": {\n            \"_id\": \"685b969253aca9e8dff14629\",\n            \"firstName\": \"Lalithbabu\",\n            \"lastName\": \"L\",\n            \"username\": null,\n            \"emailId\": \"lalithbabu.l@meralot.com\",\n            \"phoneNumber\": {\n                \"countryCode\": null,\n                \"number\": null,\n                \"fullNumber\": null\n            },\n            \"profilePicture\": null,\n            \"accountStatus\": \"active\",\n            \"isActive\": true,\n            \"roles\": [\n                {\n                    \"permissionSettings\": {\n                        \"requiresMFA\": false,\n                        \"canDelegateRoles\": false,\n                        \"canManageUsers\": false,\n                        \"canManageRoles\": false,\n                        \"canAccessAuditLogs\": false,\n                        \"canExportData\": false,\n                        \"canManageSettings\": false,\n                        \"canApproveTransactions\": false,\n                        \"maxTransactionAmount\": 0\n                    },\n                    \"accessRestrictions\": {\n                        \"accessSchedule\": {\n                            \"allowedDays\": []\n                        },\n                        \"allowedIpRanges\": [],\n                        \"allowedCountries\": []\n                    },\n                    \"_id\": \"69941e12a2c71289dd333f0a\",\n                    \"roleName\": \"VIEWER\",\n                    \"roleDisplayName\": \"Viewer\",\n                    \"description\": \"Read-only access to system data\",\n                    \"level\": 80,\n                    \"parentRole\": null,\n                    \"childRoles\": [],\n                    \"permissions\": [\n                        {\n                            \"resource\": \"*\",\n                            \"actions\": [\n                                \"read\"\n                            ],\n                            \"scope\": \"all\"\n                        }\n                    ],\n                    \"inheritPermissions\": true,\n                    \"isActive\": true,\n                    \"isSystemRole\": true,\n                    \"isDelete\": false,\n                    \"userCount\": 0,\n                    \"tags\": [],\n                    \"category\": \"operational\",\n                    \"assignmentHistory\": [],\n                    \"createdAt\": \"2026-02-17T07:51:46.993Z\",\n                    \"updatedAt\": \"2026-02-17T07:51:46.993Z\",\n                    \"__v\": 0,\n                    \"id\": \"69941e12a2c71289dd333f0a\"\n                },\n                {\n                    \"permissionSettings\": {\n                        \"canDelegateRoles\": true,\n                        \"canManageUsers\": true,\n                        \"canManageRoles\": true,\n                        \"canAccessAuditLogs\": true,\n                        \"canExportData\": true,\n                        \"canManageSettings\": true,\n                        \"canApproveTransactions\": true,\n                        \"maxTransactionAmount\": 9007199254740991,\n                        \"requiresMFA\": true\n                    },\n                    \"accessRestrictions\": {\n                        \"accessSchedule\": {\n                            \"allowedDays\": []\n                        },\n                        \"allowedIpRanges\": [],\n                        \"allowedCountries\": []\n                    },\n                    \"_id\": \"69941e12a2c71289dd333efb\",\n                    \"roleName\": \"SUPER_ADMIN\",\n                    \"roleDisplayName\": \"Super Administrator\",\n                    \"description\": \"Full system access with all permissions\",\n                    \"level\": 1,\n                    \"parentRole\": null,\n                    \"childRoles\": [],\n                    \"permissions\": [\n                        {\n                            \"resource\": \"*\",\n                            \"actions\": [\n                                \"create\",\n                                \"read\",\n                                \"update\",\n                                \"delete\",\n                                \"approve\",\n                                \"reject\",\n                                \"export\",\n                                \"import\",\n                                \"execute\"\n                            ],\n                            \"scope\": \"all\"\n                        }\n                    ],\n                    \"inheritPermissions\": true,\n                    \"isActive\": true,\n                    \"isSystemRole\": true,\n                    \"isDelete\": false,\n                    \"userCount\": 0,\n                    \"tags\": [],\n                    \"category\": \"administrative\",\n                    \"assignmentHistory\": [],\n                    \"createdAt\": \"2026-02-17T07:51:46.617Z\",\n                    \"updatedAt\": \"2026-02-17T07:51:46.617Z\",\n                    \"__v\": 0,\n                    \"id\": \"69941e12a2c71289dd333efb\"\n                }\n            ],\n            \"permissionOverrides\": {\n                \"grant\": [],\n                \"revoke\": []\n            },\n            \"mfa\": {\n                \"enabled\": false,\n                \"method\": \"totp\",\n                \"verified\": false\n            },\n            \"lastLogin\": \"2026-02-24T17:49:33.183Z\",\n            \"lastLoginDevice\": \"desktop\",\n            \"timezone\": null,\n            \"locale\": \"en-US\",\n            \"mustChangePassword\": false\n        }\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Register Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"emailId\": \"newadmin@example.com\",\n  \"password\": \"Admin@1234\",\n  \"phoneNumber\": \"+12025551234\",\n  \"role\": \"admin\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin-auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin-auth",
+            "register"
+          ]
+        },
+        "description": "Register a new admin user. Requires Super Admin privileges."
+      },
+      "response": []
+    },
+    {
+      "name": "Verify MFA (Login)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"mfaCode\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin-auth/verify-mfa",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin-auth",
+            "verify-mfa"
+          ]
+        },
+        "description": "Submit MFA code after initial login when MFA is required."
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionToken\": \"SESSION_TOKEN_HERE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin-auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin-auth",
+            "logout"
+          ]
+        },
+        "description": "Logout from the current session."
+      },
+      "response": []
+    },
+    {
+      "name": "Logout All Sessions",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin-auth/logout-all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin-auth",
+            "logout-all"
+          ]
+        },
+        "description": "Invalidate all active sessions for the current admin."
+      },
+      "response": []
+    }
+  ]
+}

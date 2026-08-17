@@ -1,0 +1,104 @@
+{
+  "folder": "🔐 Admin Auth",
+  "routes": [
+    "Authentication -  ",
+    "Password Management -  ",
+    "MFA -  ",
+    "Session Management -  ",
+    "Email & Phone Verification -  ",
+    "Account Status -  ",
+    "Security Questions -  ",
+    "Audit & History -  ",
+    "Profile Management -  ",
+    "Device Management -  "
+  ]
+}
+{
+  "folder": "🔑 Login",
+  "routes": [
+    "Admin Login (Legacy) - POST {{baseUrl}}/login/adminLogin",
+    "Update Admin Password - PUT {{baseUrl}}/login/update-admin-user"
+  ]
+}
+{
+  "folder": "🏦 Accounts",
+  "routes": [
+    "Create Admin Accounts - POST {{baseUrl}}/accounts/create",
+    "Create User Accounts - POST {{baseUrl}}/accounts/create-user-accounts",
+    "Approve Linked Accounts - POST {{baseUrl}}/accounts/approve-linked-accounts",
+    "Credit Daily Interest - POST {{baseUrl}}/accounts/credit-daily-interest"
+  ]
+}
+{
+  "folder": "📋 KYC",
+  "routes": [
+    "Update KYC Status - PUT {{baseUrl}}/kyc/update-status",
+    "Get KYC Status - GET {{baseUrl}}/kyc/status/{{userId}}"
+  ]
+}
+{
+  "folder": "💸 Transactions",
+  "routes": [
+    "Approve Transaction - POST {{baseUrl}}/transactions/approve-transaction",
+    "Verify Wallet Transaction - POST {{baseUrl}}/transactions/verify-wallet-transaction",
+    "Fund User Wallet - POST {{baseUrl}}/transactions/fund-user-wallet",
+    "Add Webhook Transaction - POST {{baseUrl}}/transactions/add-webhook-transaction",
+    "Verify Fee Transaction - POST {{baseUrl}}/transactions/verify-fee-transaction",
+    "Verify Currency Transfer - POST {{baseUrl}}/transactions/verify-currency-transfer",
+    "Sweep User Accounts - POST {{baseUrl}}/transactions/sweep-user-accounts"
+  ]
+}
+{
+  "folder": "🏢 Account Providers",
+  "routes": [
+    "Create Provider - POST {{baseUrl}}/account-providers",
+    "Get All Providers - GET {{baseUrl}}/account-providers?page=1&limit=20",
+    "Get Provider Stats - GET {{baseUrl}}/account-providers/stats",
+    "Get Eligible Providers - GET {{baseUrl}}/account-providers/eligible?currencyCode=USD&isUsUser=true",
+    "Get Provider by Code - GET {{baseUrl}}/account-providers/code/CHECKBOOK",
+    "Get Provider by ID - GET {{baseUrl}}/account-providers/{{providerId}}",
+    "Update Provider - PUT {{baseUrl}}/account-providers/{{providerId}}",
+    "Toggle Provider Status - PATCH {{baseUrl}}/account-providers/{{providerId}}/toggle",
+    "Update Provider Health - PATCH {{baseUrl}}/account-providers/{{providerId}}/health",
+    "Add Currency to Provider - POST {{baseUrl}}/account-providers/{{providerId}}/currencies",
+    "Remove Currency from Provider - DELETE {{baseUrl}}/account-providers/{{providerId}}/currencies/EUR",
+    "Soft Delete Provider - DELETE {{baseUrl}}/account-providers/{{providerId}}",
+    "Permanently Delete Provider - DELETE {{baseUrl}}/account-providers/{{providerId}}/permanent"
+  ]
+}
+{
+  "folder": "📁 Account Requests",
+  "routes": [
+    "Get Dashboard Statistics - GET {{baseUrl}}/account-requests/dashboard/statistics",
+    "Search Requests - GET {{baseUrl}}/account-requests/search?q=john",
+    "Get Pending Requests - GET {{baseUrl}}/account-requests/pending",
+    "Get Requests Requiring Action - GET {{baseUrl}}/account-requests/requires-action",
+    "Get Requests by Status - GET {{baseUrl}}/account-requests/status/pending",
+    "Get Requests by User - GET {{baseUrl}}/account-requests/user/{{userId}}",
+    "Get All Requests - GET {{baseUrl}}/account-requests?page=1&limit=20",
+    "Get Request by ID - GET {{baseUrl}}/account-requests/{{requestId}}",
+    "Approve Request - POST {{baseUrl}}/account-requests/{{requestId}}/approve",
+    "Reject Request - POST {{baseUrl}}/account-requests/{{requestId}}/reject",
+    "Cancel Request - POST {{baseUrl}}/account-requests/{{requestId}}/cancel",
+    "Process Bank Request - POST {{baseUrl}}/account-requests/{{requestId}}/process",
+    "Request Additional Documents - POST {{baseUrl}}/account-requests/{{requestId}}/request-documents",
+    "Review Additional Document - POST {{baseUrl}}/account-requests/{{requestId}}/documents/{{documentId}}/review",
+    "Add Internal Note - POST {{baseUrl}}/account-requests/{{requestId}}/notes",
+    "Log Communication - POST {{baseUrl}}/account-requests/{{requestId}}/communications",
+    "Assign Service Provider - POST {{baseUrl}}/account-requests/{{requestId}}/assign-provider",
+    "Update Request Priority - PUT {{baseUrl}}/account-requests/{{requestId}}/priority",
+    "Update Request Status - PUT {{baseUrl}}/account-requests/{{requestId}}/status"
+  ]
+}
+{
+  "folder": "👔 Merchant Management",
+  "routes": [
+    "Merchant Listing & Details -  ",
+    "Account Management -  ",
+    "Security Actions -  ",
+    "SSN & Passport Verification -  ",
+    "Document Approvals -  ",
+    "KYC Status Management -  ",
+    "Beneficial Owner Management -  "
+  ]
+}

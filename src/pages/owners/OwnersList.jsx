@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Tag } from 'antd';
+import { Button, Empty, Input, Space, message } from 'antd';
+import { ShopOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
+import StatusPill from '../../components/common/StatusPill';
+import BlockUserButton from '../../components/common/BlockUserButton';
+import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -10,6 +14,9 @@ const OwnersList = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedOwner, setSelectedOwner] = useState(null);
+  const [toilets, setToilets] = useState([]);
+  const [toiletsLoading, setToiletsLoading] = useState(false);
 
   const load = async value => {
     setLoading(true);
@@ -23,9 +30,30 @@ const OwnersList = () => {
 
   useEffect(() => { load(); }, []);
 
+  const handleBlock = async (user, blocked) => {
+    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? 'Blocked by admin' : '' });
+    message.success(blocked ? 'Owner blocked' : 'Owner unblocked');
+    load(search);
+    if (selectedOwner?.id === user.id) {
+      setSelectedOwner({ ...selectedOwner, blocked });
+    }
+  };
+
+  const openToilets = async owner => {
+    setSelectedOwner(owner);
+    setToilets(owner.listings || []);
+    setToiletsLoading(true);
+    try {
+      const res = await adminApi.listings({ ownerId: owner.id });
+      setToilets(res.items || owner.listings || []);
+    } finally {
+      setToiletsLoading(false);
+    }
+  };
+
   return (
     <div>
-      <PageHeader title="Owners" description="Hosts who have published at least one restroom listing." />
+      <PageHeader title="Owners" description="Use View toilets to see restrooms published by each host." />
       <div style={{ marginBottom: 16 }} className="max-w-md">
         <Input.Search
           placeholder="Search owner"
@@ -39,18 +67,8 @@ const OwnersList = () => {
         rowKey="id"
         loading={loading}
         dataSource={items}
-        scroll={{ x: 880 }}
-        expandable={{
-          expandedRowRender: owner => (
-            <div className="text-sm">
-              {(owner.listings || []).length
-                ? (owner.listings || []).map(item => (
-                    <Tag key={item.id} className="mb-1">{item.name}</Tag>
-                  ))
-                : <span className="pnp-cell-muted">No listings</span>}
-            </div>
-          ),
-        }}
+        scroll={{ x: 1080 }}
+        sticky
         columns={[
           {
             title: 'Owner',
@@ -67,7 +85,7 @@ const OwnersList = () => {
             dataIndex: 'city',
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
-          { title: 'Listings', dataIndex: 'listingCount' },
+          { title: 'Toilets', dataIndex: 'listingCount', render: value => value || 0 },
           { title: 'Host bookings', dataIndex: 'hostBookingCount' },
           {
             title: 'Settled',
@@ -76,13 +94,71 @@ const OwnersList = () => {
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
-            title: 'Pending',
-            dataIndex: 'pendingAmount',
-            align: 'right',
-            render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+            title: 'Access',
+            dataIndex: 'blocked',
+            render: blocked => <StatusPill value={blocked ? 'Blocked' : 'Active'} />,
+          },
+          {
+            title: 'Actions',
+            key: 'actions',
+            width: 210,
+            fixed: 'right',
+            render: row => (
+              <Space size={8} onClick={event => event.stopPropagation()}>
+                <Button
+                  size="small"
+                  type="primary"
+                  icon={<ShopOutlined />}
+                  onClick={() => openToilets(row)}
+                >
+                  View toilets
+                </Button>
+                <BlockUserButton user={row} onToggle={handleBlock} />
+              </Space>
+            ),
           },
         ]}
       />
+
+      <DetailInfoDrawer
+        open={Boolean(selectedOwner)}
+        onClose={() => setSelectedOwner(null)}
+        width={560}
+        icon={<ShopOutlined style={{ color: '#fff' }} />}
+        title={selectedOwner?.name || 'Owner toilets'}
+        subtitle={`${selectedOwner?.phone || ''} · ${toilets.length} toilet${toilets.length === 1 ? '' : 's'}`}
+      >
+        {toiletsLoading && !toilets.length ? (
+          <div className="pnp-cell-muted">Loading toilets…</div>
+        ) : toilets.length ? (
+          <div className="flex flex-col gap-3">
+            {toilets.map(item => (
+              <div
+                key={item.id}
+                className="rounded-2xl p-4"
+                style={{ border: '1px solid var(--border-color)', background: 'var(--input-bg)' }}
+              >
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div>
+                    <div className="pnp-cell-strong">{item.name}</div>
+                    <div className="pnp-cell-muted text-xs mt-1">
+                      {[item.area || item.address?.area, item.city || item.address?.city].filter(Boolean).join(', ') || '—'}
+                    </div>
+                  </div>
+                  <StatusPill value={item.availability} />
+                </div>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="pnp-cell-amount">{inr(item.basePrice)}</span>
+                  <span className="pnp-cell-muted">Rating {item.rating ?? '—'}</span>
+                  <StatusPill value={item.verified ? 'Yes' : 'No'} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Empty description="No toilets published yet" />
+        )}
+      </DetailInfoDrawer>
     </div>
   );
 };

@@ -32,6 +32,7 @@ export const API_ROUTES = {
         OVERVIEW: `${API_BASE}/admin/overview`,
         USERS: `${API_BASE}/admin/users`,
         USER: (id) => `${API_BASE}/admin/users/${id}`,
+        USER_BLOCK: (id) => `${API_BASE}/admin/users/${id}/block`,
         OWNERS: `${API_BASE}/admin/owners`,
         LISTINGS: `${API_BASE}/admin/listings`,
         BOOKINGS: `${API_BASE}/admin/bookings`,

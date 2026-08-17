@@ -108,7 +108,7 @@ const MainLayout = () => {
             type: 'group',
             label: 'Operations',
             children: [
-                { key: '/listings', icon: <ShopOutlined />, label: 'Listings' },
+                { key: '/listings', icon: <ShopOutlined />, label: 'Toilets' },
                 { key: '/history', icon: <FileTextOutlined />, label: 'History' },
                 { key: '/earnings', icon: <DollarOutlined />, label: 'Earnings' },
             ],

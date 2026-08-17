@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
+import BlockUserButton from '../../components/common/BlockUserButton';
 
 const UsersList = () => {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -22,9 +25,15 @@ const UsersList = () => {
 
   useEffect(() => { load(); }, []);
 
+  const handleBlock = async (user, blocked) => {
+    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? 'Blocked by admin' : '' });
+    message.success(blocked ? 'User blocked' : 'User unblocked');
+    load(search);
+  };
+
   return (
     <div>
-      <PageHeader title="Users" description="Everyone who has signed in with OTP, including hosts." />
+      <PageHeader title="Users" description="Everyone who has signed in with OTP, including hosts. Blocked users cannot log in." />
       <div style={{ marginBottom: 16 }} className="max-w-md">
         <Input.Search
           placeholder="Search name, phone, or city"
@@ -38,7 +47,7 @@ const UsersList = () => {
         rowKey="id"
         loading={loading}
         dataSource={items}
-        scroll={{ x: 860 }}
+        scroll={{ x: 980 }}
         columns={[
           {
             title: 'Name',
@@ -63,13 +72,27 @@ const UsersList = () => {
             ),
           },
           { title: 'Visits', dataIndex: 'bookingCount' },
-          { title: 'Listings', dataIndex: 'listingCount' },
           {
-            title: 'Profile',
-            dataIndex: 'profileCompleted',
-            render: done => (
-              <StatusPill value={done ? 'Complete' : 'Pending'} />
+            title: 'Listings',
+            dataIndex: 'listingCount',
+            render: (count, row) =>
+              count ? (
+                <button className="text-blue-600" onClick={() => navigate(`/listings?ownerId=${row.id}`)}>
+                  {count}
+                </button>
+              ) : 0,
+          },
+          {
+            title: 'Access',
+            dataIndex: 'blocked',
+            render: blocked => (
+              <StatusPill value={blocked ? 'Blocked' : 'Active'} />
             ),
+          },
+          {
+            title: '',
+            width: 110,
+            render: row => <BlockUserButton user={row} onToggle={handleBlock} />,
           },
         ]}
       />

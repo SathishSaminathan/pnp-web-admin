@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Input } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
@@ -7,33 +9,83 @@ import StatusPill from '../../components/common/StatusPill';
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
 const ListingsList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const ownerId = searchParams.get('ownerId') || '';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    adminApi.listings()
-      .then(res => setItems(res.items || []))
-      .finally(() => setLoading(false));
-  }, []);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const res = await adminApi.listings({
+        ownerId: ownerId || undefined,
+        search: search || undefined,
+      });
+      setItems(res.items || []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, [ownerId]);
+
+  const ownerName = useMemo(() => items[0]?.owner?.name, [items]);
 
   return (
     <div>
-      <PageHeader title="Listings" description="All restrooms published in the app." />
+      <PageHeader
+        title="Toilets"
+        description={
+          ownerId
+            ? `Listings published by ${ownerName || 'this owner'}.`
+            : 'All restrooms created by owners in the app.'
+        }
+        secondaryAction={
+          ownerId
+            ? {
+                label: 'All toilets',
+                onClick: () => setSearchParams({}),
+              }
+            : undefined
+        }
+      />
+      <div style={{ marginBottom: 16 }} className="max-w-md">
+        <Input.Search
+          placeholder="Search toilet, owner, or city"
+          allowClear
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onSearch={load}
+        />
+      </div>
       <DataTable
         rowKey="id"
         loading={loading}
         dataSource={items}
-        scroll={{ x: 920 }}
+        scroll={{ x: 1100 }}
         columns={[
           {
-            title: 'Name',
+            title: 'Toilet',
             dataIndex: 'name',
             render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
           },
-          { title: 'Owner', render: row => row.owner?.name || '—' },
           {
-            title: 'City',
-            render: row => <span className="pnp-cell-muted">{row.address?.city || '—'}</span>,
+            title: 'Owner',
+            render: row => (
+              <div>
+                <div className="pnp-cell-strong">{row.owner?.name || '—'}</div>
+                <div className="pnp-cell-muted">{row.owner?.phone || ''}</div>
+              </div>
+            ),
+          },
+          {
+            title: 'Location',
+            render: row => (
+              <span className="pnp-cell-muted">
+                {[row.address?.area, row.address?.city].filter(Boolean).join(', ') || '—'}
+              </span>
+            ),
           },
           {
             title: 'Price',
@@ -49,11 +101,8 @@ const ListingsList = () => {
             render: value => <StatusPill value={value} />,
           },
           {
-            title: 'Verified',
-            dataIndex: 'verified',
-            render: value => (
-              <StatusPill value={value ? 'Yes' : 'No'} tone={value ? 'info' : 'muted'} />
-            ),
+            title: 'Owner access',
+            render: row => <StatusPill value={row.ownerBlocked || row.owner?.blocked ? 'Blocked' : 'Active'} />,
           },
         ]}
       />

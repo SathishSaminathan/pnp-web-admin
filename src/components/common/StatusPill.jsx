@@ -12,8 +12,8 @@ const TONE_BY_VALUE = {
   PENDING: 'warning',
   CANCELLED: 'danger',
   NO: 'muted',
-  OWNER: 'purple',
-  USER: 'info',
+  BLOCKED: 'danger',
+  ACTIVE: 'success',
 };
 
 const StatusPill = ({ value, tone, children }) => {

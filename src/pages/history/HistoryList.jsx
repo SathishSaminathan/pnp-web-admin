@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Select } from 'antd';
+import { Avatar, Select } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
@@ -53,7 +54,12 @@ const HistoryList = () => {
           },
           {
             title: 'Customer',
-            render: row => row.user?.name || row.userId || '—',
+            render: row => (
+              <div className="flex items-center gap-2">
+                <Avatar src={row.user?.photoUrl || undefined} size={28} icon={<UserOutlined />} />
+                <span>{row.user?.name || row.userId || '—'}</span>
+              </div>
+            ),
           },
           {
             title: 'Phone',

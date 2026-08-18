@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Input, message } from 'antd';
+import { Avatar, Input, message } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
@@ -50,9 +51,14 @@ const UsersList = () => {
         scroll={{ x: 980 }}
         columns={[
           {
-            title: 'Name',
+            title: 'User',
             dataIndex: 'name',
-            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+            render: (value, row) => (
+              <div className="flex items-center gap-3">
+                <Avatar src={row.photoUrl || undefined} size={36} icon={<UserOutlined />} />
+                <span className="pnp-cell-strong">{value || '—'}</span>
+              </div>
+            ),
           },
           {
             title: 'Phone',

@@ -17,6 +17,7 @@ import {
     BankOutlined,
     MessageOutlined,
     GiftOutlined,
+    StarOutlined,
     SunOutlined,
     MoonOutlined,
     ExclamationCircleFilled,
@@ -111,6 +112,7 @@ const MainLayout = () => {
             children: [
                 { key: '/listings', icon: <ShopOutlined />, label: 'Toilets' },
                 { key: '/history', icon: <FileTextOutlined />, label: 'History' },
+                { key: '/reviews', icon: <StarOutlined />, label: 'Reviews' },
                 { key: '/earnings', icon: <DollarOutlined />, label: 'Earnings' },
             ],
         },

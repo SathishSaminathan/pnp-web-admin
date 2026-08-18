@@ -5,9 +5,6 @@ export const serverTablePagination = (query, serverPagination, updatePage) => ({
   showSizeChanger: true,
   pageSizeOptions: ['10', '20', '50'],
   onChange: (page, limit) => updatePage(page, limit),
-  showTotal: total => (
-    <span className="pnp-table-total">{total} records</span>
-  ),
 });
 
 export const cityOptions = (cities = []) =>

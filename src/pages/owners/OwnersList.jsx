@@ -7,6 +7,7 @@ import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
 import BlockUserButton from '../../components/common/BlockUserButton';
 import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
+import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -146,6 +147,9 @@ const OwnersList = () => {
                     </div>
                   </div>
                   <StatusPill value={item.availability} />
+                </div>
+                <div className="mb-3">
+                  <ListingPhotoStrip photos={item.photos} size={64} />
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs">
                   <span className="pnp-cell-amount">{inr(item.basePrice)}</span>

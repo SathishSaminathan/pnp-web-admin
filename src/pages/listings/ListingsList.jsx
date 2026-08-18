@@ -5,6 +5,7 @@ import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
+import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -65,6 +66,12 @@ const ListingsList = () => {
         dataSource={items}
         scroll={{ x: 1100 }}
         columns={[
+          {
+            title: 'Photos',
+            dataIndex: 'photos',
+            width: 168,
+            render: photos => <ListingPhotoStrip photos={photos} size={48} />,
+          },
           {
             title: 'Toilet',
             dataIndex: 'name',

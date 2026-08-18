@@ -82,12 +82,7 @@ const HistoryList = () => {
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
-            title: 'Payment',
-            dataIndex: 'paymentStatus',
-            render: value => <StatusPill value={value} />,
-          },
-          {
-            title: 'Visit',
+            title: 'Status',
             dataIndex: 'bookingStatus',
             render: value => <StatusPill value={value} />,
           },

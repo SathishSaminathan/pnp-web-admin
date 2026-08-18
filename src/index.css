@@ -1265,3 +1265,13 @@ html.dark .pnp-stat-card:hover {
   font-weight: 600;
   color: var(--text-secondary);
 }
+
+.ant-avatar {
+  overflow: hidden;
+}
+
+.ant-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

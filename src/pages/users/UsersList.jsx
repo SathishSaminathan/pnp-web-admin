@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Input, message } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
 import BlockUserButton from '../../components/common/BlockUserButton';
+import UserAvatar from '../../components/common/UserAvatar';
 
 const UsersList = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const UsersList = () => {
             dataIndex: 'name',
             render: (value, row) => (
               <div className="flex items-center gap-3">
-                <Avatar src={row.photoUrl || undefined} size={36} icon={<UserOutlined />} />
+                <UserAvatar src={row.photoUrl} name={value} size={36} />
                 <span className="pnp-cell-strong">{value || '—'}</span>
               </div>
             ),

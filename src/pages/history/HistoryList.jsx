@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Select } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Select } from 'antd';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
+import UserAvatar from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -56,7 +56,7 @@ const HistoryList = () => {
             title: 'Customer',
             render: row => (
               <div className="flex items-center gap-2">
-                <Avatar src={row.user?.photoUrl || undefined} size={28} icon={<UserOutlined />} />
+                <UserAvatar src={row.user?.photoUrl} name={row.user?.name} size={28} />
                 <span>{row.user?.name || row.userId || '—'}</span>
               </div>
             ),

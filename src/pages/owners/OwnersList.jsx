@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Empty, Input, Space, message, Avatar } from 'antd';
-import { ShopOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Empty, Input, Space, message } from 'antd';
+import { ShopOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
@@ -9,6 +9,7 @@ import BlockUserButton from '../../components/common/BlockUserButton';
 import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
+import UserAvatar from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -92,7 +93,7 @@ const OwnersList = () => {
             dataIndex: 'name',
             render: (value, row) => (
               <div className="flex items-center gap-3">
-                <Avatar src={row.photoUrl || undefined} size={36} icon={<UserOutlined />} />
+                <UserAvatar src={row.photoUrl} name={value} size={36} />
                 <span className="pnp-cell-strong">{value || '—'}</span>
               </div>
             ),

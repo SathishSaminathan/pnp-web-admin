@@ -6,6 +6,8 @@ const TONE_BY_VALUE = {
   SETTLED: 'success',
   AVAILABLE: 'success',
   YES: 'success',
+  VERIFIED: 'success',
+  UNVERIFIED: 'warning',
   COMPLETE: 'success',
   UPCOMING: 'info',
   ACTIVE: 'warning',

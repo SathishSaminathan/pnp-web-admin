@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UserOutlined, ShopOutlined, DollarCircleOutlined, FileTextOutlined } from '@ant-design/icons';
+import { UserOutlined, ShopOutlined, DollarCircleOutlined, FileTextOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
@@ -23,7 +23,7 @@ const Dashboard = () => {
   return (
     <div>
       <PageHeader title="Dashboard" description="PNP platform snapshot for users, owners, visits, and earnings." />
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-6">
         <StatCard
           icon={<UserOutlined />}
           color="#3b82f6"
@@ -36,6 +36,14 @@ const Dashboard = () => {
           label="Owners"
           value={data?.owners ?? '—'}
         />
+        <div role="button" style={{ cursor: 'pointer' }} onClick={() => navigate('/listings?verified=pending')}>
+          <StatCard
+            icon={<SafetyCertificateOutlined />}
+            color="#f97316"
+            label="Pending verification"
+            value={data?.pendingListings ?? '—'}
+          />
+        </div>
         <StatCard
           icon={<FileTextOutlined />}
           color="#f59e0b"

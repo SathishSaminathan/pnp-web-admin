@@ -35,6 +35,7 @@ export const API_ROUTES = {
         USER_BLOCK: (id) => `${API_BASE}/admin/users/${id}/block`,
         OWNERS: `${API_BASE}/admin/owners`,
         LISTINGS: `${API_BASE}/admin/listings`,
+        LISTING_VERIFIED: (id) => `${API_BASE}/admin/listings/${id}/verified`,
         BOOKINGS: `${API_BASE}/admin/bookings`,
         EARNINGS: `${API_BASE}/admin/earnings`,
         TRANSACTIONS: `${API_BASE}/admin/transactions`,

@@ -8,6 +8,7 @@ import StatusPill from '../../components/common/StatusPill';
 import BlockUserButton from '../../components/common/BlockUserButton';
 import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
+import VerifyListingButton from '../../components/common/VerifyListingButton';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -18,6 +19,7 @@ const OwnersList = () => {
   const [selectedOwner, setSelectedOwner] = useState(null);
   const [toilets, setToilets] = useState([]);
   const [toiletsLoading, setToiletsLoading] = useState(false);
+  const [savingId, setSavingId] = useState('');
 
   const load = async value => {
     setLoading(true);
@@ -49,6 +51,20 @@ const OwnersList = () => {
       setToilets(res.items || owner.listings || []);
     } finally {
       setToiletsLoading(false);
+    }
+  };
+
+  const handleVerified = async (listing, verified) => {
+    setSavingId(listing.id);
+    try {
+      const updated = await adminApi.setListingVerified(listing.id, { verified });
+      message.success(verified ? 'Listing approved as verified. Owner was notified.' : 'Verification removed. Owner was notified.');
+      setToilets(current => current.map(item => (item.id === listing.id ? { ...item, ...updated } : item)));
+      load(search);
+    } catch (error) {
+      message.error(error?.response?.data?.message || error?.message || 'Could not update verification');
+    } finally {
+      setSavingId('');
     }
   };
 
@@ -156,10 +172,15 @@ const OwnersList = () => {
                 <div className="mb-3">
                   <ListingPhotoStrip photos={item.photos} size={64} />
                 </div>
-                <div className="flex flex-wrap gap-2 text-xs">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="pnp-cell-amount">{inr(item.basePrice)}</span>
                   <span className="pnp-cell-muted">Rating {item.rating ?? '—'}</span>
-                  <StatusPill value={item.verified ? 'Yes' : 'No'} />
+                  <StatusPill value={item.verified ? 'Verified' : 'Unverified'} />
+                  <VerifyListingButton
+                    listing={item}
+                    loading={savingId === item.id}
+                    onToggle={handleVerified}
+                  />
                 </div>
               </div>
             ))}

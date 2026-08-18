@@ -177,22 +177,30 @@ const ListingsList = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
-        scroll={{ x: 1280 }}
+        skeletonLayout="listings"
+        skeletonMinWidth={1480}
+        scroll={{ x: 1480 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Photos',
             dataIndex: 'photos',
             width: 168,
+            fixed: 'left',
             render: photos => <ListingPhotoStrip photos={photos} size={48} />,
           },
           {
             title: 'Toilet',
             dataIndex: 'name',
+            width: 200,
+            fixed: 'left',
+            ellipsis: true,
             render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
           },
           {
             title: 'Owner',
+            width: 200,
+            ellipsis: true,
             render: row => (
               <UserNameCell
                 user={row.owner}
@@ -203,6 +211,8 @@ const ListingsList = () => {
           },
           {
             title: 'Location',
+            width: 180,
+            ellipsis: true,
             render: row => (
               <span className="pnp-cell-muted">
                 {[row.address?.area, row.address?.city].filter(Boolean).join(', ') || '—'}
@@ -212,25 +222,29 @@ const ListingsList = () => {
           {
             title: 'Price',
             dataIndex: 'basePrice',
+            width: 100,
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
-          { title: 'Rating', dataIndex: 'rating', render: value => value ?? '—' },
-          { title: 'Bookings', dataIndex: 'bookingCount', render: value => value ?? 0 },
+          { title: 'Rating', dataIndex: 'rating', width: 90, align: 'right', render: value => value ?? '—' },
+          { title: 'Bookings', dataIndex: 'bookingCount', width: 100, align: 'right', render: value => value ?? 0 },
           {
             title: 'Availability',
             dataIndex: 'availability',
+            width: 140,
             render: value => <StatusPill value={value} />,
           },
           {
             title: 'Verification',
             dataIndex: 'verified',
+            width: 130,
             render: (_, row) => (
               <StatusPill value={row.verified ? 'Verified' : 'Unverified'} />
             ),
           },
           {
             title: 'Owner access',
+            width: 130,
             render: row => <StatusPill value={row.ownerBlocked || row.owner?.blocked ? 'Blocked' : 'Active'} />,
           },
           {

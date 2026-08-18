@@ -28,12 +28,14 @@ const Dashboard = () => {
           icon={<UserOutlined />}
           color="#3b82f6"
           label="Users"
+          loading={loading}
           value={data?.users ?? '—'}
         />
         <StatCard
           icon={<ShopOutlined />}
           color="#8b5cf6"
           label="Owners"
+          loading={loading}
           value={data?.owners ?? '—'}
         />
         <div role="button" style={{ cursor: 'pointer' }} onClick={() => navigate('/listings?verified=pending')}>
@@ -41,6 +43,7 @@ const Dashboard = () => {
             icon={<SafetyCertificateOutlined />}
             color="#f97316"
             label="Pending verification"
+            loading={loading}
             value={data?.pendingListings ?? '—'}
           />
         </div>
@@ -48,12 +51,14 @@ const Dashboard = () => {
           icon={<FileTextOutlined />}
           color="#f59e0b"
           label="Bookings"
+          loading={loading}
           value={data?.bookings ?? '—'}
         />
         <StatCard
           icon={<DollarCircleOutlined />}
           color="#10b981"
           label="Net earnings"
+          loading={loading}
           value={data ? inr(data.earnings?.net) : '—'}
         />
       </div>
@@ -68,32 +73,41 @@ const Dashboard = () => {
           rowKey="id"
           loading={loading}
           pagination={false}
+          skeletonLayout="dashboard"
+          skeletonMinWidth={760}
+          scroll={{ x: 760 }}
           dataSource={data?.recentBookings || []}
           columns={[
             {
               title: 'Visit',
               dataIndex: 'toiletName',
+              width: 220,
+              ellipsis: true,
               render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
             },
             {
               title: 'Date',
               dataIndex: 'date',
+              width: 130,
               render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
             },
             {
               title: 'Time',
               dataIndex: 'time',
+              width: 120,
               render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
             },
             {
               title: 'Amount',
               dataIndex: 'amount',
+              width: 120,
               align: 'right',
               render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
             },
             {
               title: 'Status',
               dataIndex: 'bookingStatus',
+              width: 140,
               render: status => <StatusPill value={status} />,
             },
           ]}

@@ -92,35 +92,47 @@ const UsersList = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
-        scroll={{ x: 980 }}
+        skeletonLayout="users"
+        skeletonMinWidth={1140}
+        scroll={{ x: 1140 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'User',
             dataIndex: 'name',
+            width: 220,
+            fixed: 'left',
+            ellipsis: true,
             render: (value, row) => <UserNameCell user={row} name={value} />,
           },
           {
             title: 'Phone',
             dataIndex: 'phone',
+            width: 140,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'City',
             dataIndex: 'city',
+            width: 140,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'Role',
             dataIndex: 'role',
+            width: 110,
             render: role => (
               <StatusPill value={role} tone={role === 'owner' ? 'purple' : 'info'} />
             ),
           },
-          { title: 'Visits', dataIndex: 'bookingCount' },
+          { title: 'Visits', dataIndex: 'bookingCount', width: 90, align: 'right' },
           {
             title: 'Listings',
             dataIndex: 'listingCount',
+            width: 100,
+            align: 'right',
             render: (count, row) =>
               count ? (
                 <button className="text-blue-600" onClick={() => navigate(`/listings?ownerId=${row.id}`)}>
@@ -131,13 +143,15 @@ const UsersList = () => {
           {
             title: 'Access',
             dataIndex: 'blocked',
+            width: 110,
             render: blocked => (
               <StatusPill value={blocked ? 'Blocked' : 'Active'} />
             ),
           },
           {
             title: '',
-            width: 110,
+            width: 120,
+            fixed: 'right',
             render: row => <BlockUserButton user={row} onToggle={handleBlock} />,
           },
         ]}

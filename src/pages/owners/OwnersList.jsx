@@ -14,6 +14,7 @@ import UserAvatar, { UserNameCell } from '../../components/common/UserAvatar';
 import { useServerTable } from '../../hooks/useServerTable';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 import { cityOptions, serverTablePagination } from '../../utils/serverTable';
+import { ListingCardsSkeleton } from '../../components/common/skeletons';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -117,36 +118,46 @@ const OwnersList = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
-        scroll={{ x: 1080 }}
-        sticky
+        skeletonLayout="owners"
+        skeletonMinWidth={1160}
+        scroll={{ x: 1160 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Owner',
             dataIndex: 'name',
+            width: 220,
+            fixed: 'left',
+            ellipsis: true,
             render: (value, row) => <UserNameCell user={row} name={value} />,
           },
           {
             title: 'Phone',
             dataIndex: 'phone',
+            width: 140,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'City',
             dataIndex: 'city',
+            width: 140,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
-          { title: 'Toilets', dataIndex: 'listingCount', render: value => value || 0 },
-          { title: 'Host bookings', dataIndex: 'hostBookingCount' },
+          { title: 'Toilets', dataIndex: 'listingCount', width: 90, align: 'right', render: value => value || 0 },
+          { title: 'Host bookings', dataIndex: 'hostBookingCount', width: 130, align: 'right' },
           {
             title: 'Settled',
             dataIndex: 'settledAmount',
+            width: 120,
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
             title: 'Access',
             dataIndex: 'blocked',
+            width: 110,
             render: blocked => <StatusPill value={blocked ? 'Blocked' : 'Active'} />,
           },
           {
@@ -180,7 +191,7 @@ const OwnersList = () => {
         subtitle={`${selectedOwner?.phone || ''} · ${toilets.length} toilet${toilets.length === 1 ? '' : 's'}`}
       >
         {toiletsLoading && !toilets.length ? (
-          <div className="pnp-cell-muted">Loading toilets…</div>
+          <ListingCardsSkeleton count={3} />
         ) : toilets.length ? (
           <div className="flex flex-col gap-3">
             {toilets.map(item => (

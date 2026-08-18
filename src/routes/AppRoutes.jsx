@@ -1,11 +1,11 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Spin } from 'antd';
 import { PageErrorBoundary, AsyncErrorBoundary } from '../components/error';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
 import Login from '../pages/auth/Login';
+import { RoutePageSkeleton } from '../components/common/skeletons';
 
 const Dashboard = lazy(() => import('../pages/dashboard/Dashboard'));
 const UsersList = lazy(() => import('../pages/users/UsersList'));
@@ -18,11 +18,7 @@ const MasterDataPage = lazy(() => import('../pages/master/MasterDataPage'));
 const Settings = lazy(() => import('../pages/settings/Settings'));
 const SendPushPage = lazy(() => import('../pages/notifications/SendPushPage'));
 
-const PageLoader = () => (
-    <div className="flex items-center justify-center min-h-[400px]">
-        <Spin size="large" />
-    </div>
-);
+const PageLoader = () => <RoutePageSkeleton />;
 
 const NotFound = () => <div className="p-12 text-center text-gray-500">404 - Page Not Found</div>;
 

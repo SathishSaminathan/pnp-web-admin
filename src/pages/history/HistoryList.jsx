@@ -83,16 +83,23 @@ const HistoryList = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
-        scroll={{ x: 960 }}
+        skeletonLayout="history"
+        skeletonMinWidth={1110}
+        scroll={{ x: 1110 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Toilet',
             dataIndex: 'toiletName',
+            width: 200,
+            fixed: 'left',
+            ellipsis: true,
             render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
           },
           {
             title: 'Customer',
+            width: 180,
+            ellipsis: true,
             render: row => (
               <UserNameCell
                 user={row.user}
@@ -103,32 +110,38 @@ const HistoryList = () => {
           },
           {
             title: 'Phone',
+            width: 130,
             render: row => <span className="pnp-cell-muted">{row.user?.phone || '—'}</span>,
           },
           {
             title: 'Date',
             dataIndex: 'date',
+            width: 120,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'Time',
             dataIndex: 'time',
+            width: 110,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'Amount',
             dataIndex: 'amount',
+            width: 110,
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
             title: 'Payment',
             dataIndex: 'paymentStatus',
+            width: 120,
             render: value => <StatusPill value={value} />,
           },
           {
             title: 'Status',
             dataIndex: 'bookingStatus',
+            width: 140,
             render: value => <StatusPill value={value} />,
           },
         ]}

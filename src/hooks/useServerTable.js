@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buildQueryParams } from "../utils/buildQueryParams";
+import { extractTablePayload } from "../utils/serverTable";
 
 /**
  * Reusable server-driven table hook.
@@ -52,25 +53,10 @@ export function useServerTable(apiFn, initialQuery) {
       .current(cleanParams, signal)
       .then((res) => {
         if (signal.aborted) return;
-        const rows = Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res?.items)
-            ? res.items
-            : [];
-        const pagination =
-          res?.meta?.pagination ??
-          (res && res.total != null
-            ? {
-                page: res.page,
-                limit: res.limit,
-                total: res.total,
-                totalRecords: res.total,
-                totalPages: res.totalPages,
-              }
-            : null);
+        const { rows, pagination, meta } = extractTablePayload(res);
         setData(rows);
         setServerPagination(pagination);
-        setResponseMeta(res?.meta ?? null);
+        setResponseMeta(meta);
       })
       .catch((err) => {
         /* Silently swallow aborted/cancelled requests */

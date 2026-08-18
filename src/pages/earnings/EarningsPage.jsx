@@ -98,12 +98,11 @@ const EarningsPage = () => {
             color={card.color}
             label={card.label}
             hint={card.hint}
+            loading={!earnings}
             value={
-              earnings
-                ? card.count
-                  ? String(Number(card.value || 0))
-                  : inr(card.value)
-                : '—'
+              card.count
+                ? String(Number(card.value || 0))
+                : inr(card.value)
             }
           />
         ))}
@@ -130,21 +129,30 @@ const EarningsPage = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
-        scroll={{ x: 920 }}
+        skeletonLayout="earnings"
+        skeletonMinWidth={1120}
+        scroll={{ x: 1120 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Transaction',
             dataIndex: 'id',
+            width: 150,
+            fixed: 'left',
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value}</span>,
           },
           {
             title: 'Toilet',
             dataIndex: 'toiletName',
+            width: 200,
+            ellipsis: true,
             render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
           },
           {
             title: 'Owner',
+            width: 180,
+            ellipsis: true,
             render: row => (
               <UserNameCell user={row.owner} name={row.owner?.name || row.ownerId} size={28} />
             ),
@@ -152,29 +160,34 @@ const EarningsPage = () => {
           {
             title: 'Gross',
             dataIndex: 'grossAmount',
+            width: 110,
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
             title: 'Fee',
             dataIndex: 'platformFee',
+            width: 100,
             align: 'right',
             render: value => <span className="pnp-cell-muted">{inr(value)}</span>,
           },
           {
             title: 'Net',
             dataIndex: 'netAmount',
+            width: 110,
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
             title: 'Payment',
             dataIndex: 'paymentStatus',
+            width: 120,
             render: value => <StatusPill value={value} />,
           },
           {
             title: 'Status',
             dataIndex: 'settlementStatus',
+            width: 130,
             render: value => <StatusPill value={value} />,
           },
         ]}

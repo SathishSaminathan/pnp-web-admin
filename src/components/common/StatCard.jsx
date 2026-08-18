@@ -1,6 +1,7 @@
 import React from 'react';
+import { SkeletonBone } from './skeletons';
 
-const StatCard = ({ icon, color = '#2563eb', label, value, hint }) => (
+const StatCard = ({ icon, color = '#2563eb', label, value, hint, loading = false }) => (
   <div
     className="pnp-stat-card"
     style={{
@@ -15,7 +16,9 @@ const StatCard = ({ icon, color = '#2563eb', label, value, hint }) => (
       </div>
       {hint ? <span className="pnp-stat-card__hint">{hint}</span> : null}
     </div>
-    <div className="pnp-stat-card__value">{value}</div>
+    <div className="pnp-stat-card__value">
+      {loading ? <SkeletonBone width={88} height={28} radius={8} /> : value}
+    </div>
     <div className="pnp-stat-card__label">{label}</div>
   </div>
 );

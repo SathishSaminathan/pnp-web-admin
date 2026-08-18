@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from 'react';
-import { Spin } from 'antd';
 import { logError } from '../../services/errorLogger.js';
 import ErrorFallback from './ErrorFallback.jsx';
+import { RoutePageSkeleton } from '../common/skeletons.jsx';
 
 /**
  * Async Error Boundary
@@ -13,7 +13,7 @@ import ErrorFallback from './ErrorFallback.jsx';
  * - Third-party widgets that may crash
  *
  * Features:
- * - Shows loading spinner during lazy load
+ * - Shows a page skeleton during lazy load
  * - Catches chunk load failures (network issues)
  * - Provides retry mechanism for failed lazy loads
  * - Isolates crashes to the wrapped module only
@@ -24,11 +24,7 @@ import ErrorFallback from './ErrorFallback.jsx';
  *   </AsyncErrorBoundary>
  */
 
-const DefaultLoader = () => (
-  <div className="flex items-center justify-center min-h-[200px]">
-    <Spin size="large" />
-  </div>
-);
+const DefaultLoader = () => <RoutePageSkeleton />;
 
 class AsyncErrorBoundary extends Component {
   constructor(props) {

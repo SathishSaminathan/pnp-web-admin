@@ -105,9 +105,9 @@ const MasterDataPage = () => {
   ], [query.active, updateFilters]);
 
   const columns = [
-    { title: 'Label', dataIndex: 'label', render: value => <span className="pnp-cell-strong">{value}</span> },
-    { title: 'Value', dataIndex: 'value' },
-    { title: 'Order', dataIndex: 'sortOrder', width: 90 },
+    { title: 'Label', dataIndex: 'label', width: 200, fixed: 'left', ellipsis: true, render: value => <span className="pnp-cell-strong">{value}</span> },
+    { title: 'Value', dataIndex: 'value', width: 180, ellipsis: true },
+    { title: 'Order', dataIndex: 'sortOrder', width: 90, align: 'right' },
     {
       title: 'Status',
       dataIndex: 'active',
@@ -118,6 +118,7 @@ const MasterDataPage = () => {
       ? {
           title: 'Color',
           dataIndex: 'color',
+          width: 160,
           render: (color, row) => (
             <span className="inline-flex items-center gap-2">
               <span className="w-4 h-4 rounded-full border" style={{ background: color }} />
@@ -129,6 +130,7 @@ const MasterDataPage = () => {
     {
       title: '',
       width: 160,
+      fixed: 'right',
       render: record => (
         <div className="flex gap-2">
           <Button size="small" onClick={() => openEdit(record)}>Edit</Button>
@@ -164,6 +166,9 @@ const MasterDataPage = () => {
         loading={loading}
         dataSource={data}
         columns={columns}
+        skeletonLayout="master"
+        skeletonMinWidth={800}
+        scroll={{ x: 800 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
       />
 

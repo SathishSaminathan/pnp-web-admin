@@ -67,6 +67,8 @@ const ReviewsList = () => {
         rowKey="id"
         loading={loading}
         dataSource={data}
+        skeletonLayout="reviews"
+        skeletonMinWidth={1100}
         scroll={{ x: 1100 }}
         pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
@@ -74,11 +76,14 @@ const ReviewsList = () => {
             title: 'Photos',
             dataIndex: 'photos',
             width: 148,
+            fixed: 'left',
             render: photos => <ListingPhotoStrip photos={photos} size={48} max={3} />,
           },
           {
             title: 'Guest',
             dataIndex: 'userName',
+            width: 180,
+            ellipsis: true,
             render: (value, row) => (
               <UserNameCell user={row.user} name={value || row.user?.name} />
             ),
@@ -86,21 +91,28 @@ const ReviewsList = () => {
           {
             title: 'Toilet',
             dataIndex: 'toiletName',
+            width: 180,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'Rating',
             dataIndex: 'rating',
+            width: 90,
+            align: 'right',
             render: value => Number(value || 0).toFixed(1),
           },
           {
             title: 'Comment',
             dataIndex: 'comment',
+            width: 280,
+            ellipsis: true,
             render: value => <span className="pnp-cell-muted">{value || '—'}</span>,
           },
           {
             title: 'Date',
             dataIndex: 'createdAt',
+            width: 130,
             render: value => <span className="pnp-cell-muted">{formatDate(value)}</span>,
           },
         ]}

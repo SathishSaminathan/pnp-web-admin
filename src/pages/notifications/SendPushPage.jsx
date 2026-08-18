@@ -4,6 +4,7 @@ import { BellOutlined, SendOutlined, StopOutlined, CheckCircleOutlined } from '@
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import UserAvatar from '../../components/common/UserAvatar';
+import { PushPageSkeleton } from '../../components/common/skeletons';
 
 const interpolate = (template, vars = {}) =>
   String(template || '').replace(/\{\{(\w+)\}\}/g, (_, key) => (vars[key] == null ? '' : String(vars[key])));
@@ -149,7 +150,10 @@ const SendPushPage = () => {
         description="Create a campaign from a template, or send the account blocked / restored message that also fires automatically from Users and Owners."
       />
 
-      <Tabs
+      {loading ? (
+        <PushPageSkeleton />
+      ) : (
+        <Tabs
         defaultActiveKey="campaign"
         items={[
           {
@@ -157,7 +161,7 @@ const SendPushPage = () => {
             label: 'Send campaign',
             children: (
               <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-4">
-                <Card loading={loading} className="pnp-table-card">
+                <Card className="pnp-table-card">
                   <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                     Choose a template, then edit the copy before sending.
                   </p>
@@ -241,7 +245,7 @@ const SendPushPage = () => {
             label: 'Block / restore',
             children: (
               <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-4">
-                <Card loading={loading} className="pnp-table-card">
+                <Card className="pnp-table-card">
                   <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                     These messages are sent automatically when you block or unblock someone on Users or Owners. You can also send them from here.
                   </p>
@@ -312,7 +316,8 @@ const SendPushPage = () => {
             ),
           },
         ]}
-      />
+        />
+      )}
     </div>
   );
 };

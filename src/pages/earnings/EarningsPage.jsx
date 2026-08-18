@@ -31,14 +31,14 @@ const EarningsPage = () => {
   }, []);
 
   const cards = [
-    { label: 'Today', value: earnings?.today, color: '#3b82f6', icon: <CalendarOutlined />, hint: '24h' },
-    { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: '7 days' },
-    { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: '30 days' },
-    { label: 'Lifetime', value: earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'All time' },
-    { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Paid visits' },
+    { label: 'Today', value: earnings?.today, color: '#3b82f6', icon: <CalendarOutlined />, hint: 'Net' },
+    { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: 'Net' },
+    { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: 'Net' },
+    { label: 'Lifetime net', value: earnings?.net ?? earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'Host payout' },
+    { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Paid by users' },
     { label: 'Platform fees', value: earnings?.fees, color: '#f59e0b', icon: <PercentageOutlined />, hint: 'Commission' },
-    { label: 'Net to hosts', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'Paid' },
-    { label: 'Settled', value: earnings?.settled ?? earnings?.net, color: '#16a34a', icon: <WalletOutlined />, hint: 'Paid' },
+    { label: 'Visits', value: earnings?.visitCount, color: '#2563eb', icon: <WalletOutlined />, hint: 'Paid', count: true },
+    { label: 'Listings', value: earnings?.listingCount, color: '#16a34a', icon: <WalletOutlined />, hint: 'Toilets', count: true },
   ];
 
   return (
@@ -52,7 +52,13 @@ const EarningsPage = () => {
             color={card.color}
             label={card.label}
             hint={card.hint}
-            value={earnings ? inr(card.value) : '—'}
+            value={
+              earnings
+                ? card.count
+                  ? String(Number(card.value || 0))
+                  : inr(card.value)
+                : '—'
+            }
           />
         ))}
       </div>

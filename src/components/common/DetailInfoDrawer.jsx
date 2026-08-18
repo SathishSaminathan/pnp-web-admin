@@ -9,6 +9,7 @@ import { Drawer, Avatar, Divider } from "antd";
  *  onClose    – fn
  *  title      – string | ReactNode
  *  icon       – ReactNode  (shown left of title in header)
+ *  avatar     – ReactNode  (replaces icon; use UserAvatar for people)
  *  subtitle   – string     (small line below title)
  *  extra      – ReactNode  (top-right header action e.g. a button)
  *  width      – number     (desktop width, default 520)
@@ -19,6 +20,7 @@ export const DetailInfoDrawer = ({
   onClose,
   title,
   icon,
+  avatar,
   subtitle,
   extra,
   width = 520,
@@ -49,7 +51,8 @@ export const DetailInfoDrawer = ({
       }}
       title={
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {icon && (
+          {avatar}
+          {!avatar && icon && (
             <div
               style={{
                 width: 32,

@@ -9,7 +9,7 @@ import BlockUserButton from '../../components/common/BlockUserButton';
 import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
-import UserAvatar from '../../components/common/UserAvatar';
+import UserAvatar, { UserNameCell } from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -91,12 +91,7 @@ const OwnersList = () => {
           {
             title: 'Owner',
             dataIndex: 'name',
-            render: (value, row) => (
-              <div className="flex items-center gap-3">
-                <UserAvatar src={row.photoUrl} name={value} size={36} />
-                <span className="pnp-cell-strong">{value || '—'}</span>
-              </div>
-            ),
+            render: (value, row) => <UserNameCell user={row} name={value} />,
           },
           {
             title: 'Phone',
@@ -147,7 +142,7 @@ const OwnersList = () => {
         open={Boolean(selectedOwner)}
         onClose={() => setSelectedOwner(null)}
         width={560}
-        icon={<ShopOutlined style={{ color: '#fff' }} />}
+        avatar={<UserAvatar user={selectedOwner} size={36} />}
         title={selectedOwner?.name || 'Owner toilets'}
         subtitle={`${selectedOwner?.phone || ''} · ${toilets.length} toilet${toilets.length === 1 ? '' : 's'}`}
       >

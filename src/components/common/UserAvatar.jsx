@@ -14,16 +14,20 @@ const initialsFromName = name => {
 const resolvePhotoUrl = value => {
   if (!value) return '';
   if (typeof value === 'object') {
-    return String(value.uri || value.url || value.photoUrl || '').trim();
+    return resolvePhotoUrl(value.uri || value.url || value.photoUrl || '');
   }
   return String(value).trim();
 };
 
-const UserAvatar = ({ src, name = '', size = 36 }) => {
-  const photoUrl = useMemo(() => resolvePhotoUrl(src), [src]);
+const UserAvatar = ({ src, name = '', size = 36, user }) => {
+  const displayName = name || user?.name || '';
+  const photoUrl = useMemo(
+    () => resolvePhotoUrl(src) || resolvePhotoUrl(user?.photoUrl),
+    [src, user],
+  );
   const [failed, setFailed] = useState(false);
   const showImage = Boolean(photoUrl) && !failed;
-  const initials = initialsFromName(name);
+  const initials = initialsFromName(displayName);
 
   useEffect(() => {
     setFailed(false);
@@ -32,7 +36,7 @@ const UserAvatar = ({ src, name = '', size = 36 }) => {
   return (
     <Avatar
       size={size}
-      alt={name || 'User'}
+      alt={displayName || 'User'}
       src={showImage ? photoUrl : undefined}
       referrerPolicy="no-referrer"
       style={{
@@ -45,13 +49,36 @@ const UserAvatar = ({ src, name = '', size = 36 }) => {
       }}
       imgProps={{
         referrerPolicy: 'no-referrer',
-        alt: name || 'User',
+        alt: displayName || 'User',
         style: { objectFit: 'cover', width: '100%', height: '100%' },
         onError: () => setFailed(true),
       }}
     >
       {initials}
     </Avatar>
+  );
+};
+
+export const UserNameCell = ({
+  user,
+  name,
+  src,
+  size = 36,
+  subtitle,
+}) => {
+  const displayName = name || user?.name || '—';
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <UserAvatar
+        src={src || user?.photoUrl}
+        name={displayName === '—' ? '' : displayName}
+        size={size}
+      />
+      <div className="min-w-0">
+        <div className="pnp-cell-strong truncate">{displayName}</div>
+        {subtitle ? <div className="pnp-cell-muted truncate">{subtitle}</div> : null}
+      </div>
+    </div>
   );
 };
 

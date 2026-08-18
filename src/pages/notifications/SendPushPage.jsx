@@ -3,9 +3,26 @@ import { Button, Card, Form, Input, Radio, Select, Tabs, Tag, message } from 'an
 import { BellOutlined, SendOutlined, StopOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
+import UserAvatar from '../../components/common/UserAvatar';
 
 const interpolate = (template, vars = {}) =>
   String(template || '').replace(/\{\{(\w+)\}\}/g, (_, key) => (vars[key] == null ? '' : String(vars[key])));
+
+const userSelectOption = (user, extra = '') => ({
+  value: user.id,
+  label: `${user.name || 'Unnamed'} · ${user.phone || '—'}${extra}`,
+  user,
+});
+
+const UserSelectLabel = ({ user, extra = '' }) => (
+  <div className="flex items-center gap-2 min-w-0 py-0.5">
+    <UserAvatar user={user} size={24} />
+    <span className="truncate">
+      {user?.name || 'Unnamed'} · {user?.phone || '—'}
+      {extra}
+    </span>
+  </div>
+);
 
 const SendPushPage = () => {
   const [form] = Form.useForm();
@@ -182,10 +199,13 @@ const SendPushPage = () => {
                           showSearch
                           placeholder="Search by name or phone"
                           optionFilterProp="label"
-                          options={users.map(user => ({
-                            value: user.id,
-                            label: `${user.name || 'Unnamed'} · ${user.phone || '—'}${user.hasDeviceToken ? '' : ' · no device token'}`,
-                          }))}
+                          optionRender={option => (
+                            <UserSelectLabel
+                              user={option.data.user}
+                              extra={option.data.user?.hasDeviceToken ? '' : ' · no device token'}
+                            />
+                          )}
+                          options={users.map(user => userSelectOption(user, user.hasDeviceToken ? '' : ' · no device token'))}
                         />
                       </Form.Item>
                     ) : null}
@@ -246,15 +266,20 @@ const SendPushPage = () => {
                       </Radio.Group>
                     </Form.Item>
                     <Form.Item name="userId" label="User" rules={[{ required: true, message: 'Select a user' }]}>
-                      <Select
-                        showSearch
-                        placeholder="Search by name or phone"
-                        optionFilterProp="label"
-                        options={users.map(user => ({
-                          value: user.id,
-                          label: `${user.name || 'Unnamed'} · ${user.phone || '—'}${user.blocked ? ' · blocked' : ''}${user.hasDeviceToken ? '' : ' · no device token'}`,
-                        }))}
-                      />
+                        <Select
+                          showSearch
+                          placeholder="Search by name or phone"
+                          optionFilterProp="label"
+                          optionRender={option => (
+                            <UserSelectLabel
+                              user={option.data.user}
+                              extra={`${option.data.user?.blocked ? ' · blocked' : ''}${option.data.user?.hasDeviceToken ? '' : ' · no device token'}`}
+                            />
+                          )}
+                          options={users.map(user =>
+                            userSelectOption(user, `${user.blocked ? ' · blocked' : ''}${user.hasDeviceToken ? '' : ' · no device token'}`),
+                          )}
+                        />
                     </Form.Item>
                     {statusAction === 'account_blocked' ? (
                       <Form.Item name="reason" label="Reason (optional)">

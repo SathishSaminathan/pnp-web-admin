@@ -4,6 +4,7 @@ import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
+import { UserNameCell } from '../../components/common/UserAvatar';
 
 const formatDate = value => {
   if (!value) return '—';
@@ -62,7 +63,9 @@ const ReviewsList = () => {
           {
             title: 'Guest',
             dataIndex: 'userName',
-            render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
+            render: (value, row) => (
+              <UserNameCell user={row.user} name={value || row.user?.name} />
+            ),
           },
           {
             title: 'Toilet',

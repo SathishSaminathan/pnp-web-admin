@@ -7,6 +7,7 @@ import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
+import { UserNameCell } from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -114,10 +115,11 @@ const ListingsList = () => {
           {
             title: 'Owner',
             render: row => (
-              <div>
-                <div className="pnp-cell-strong">{row.owner?.name || '—'}</div>
-                <div className="pnp-cell-muted">{row.owner?.phone || ''}</div>
-              </div>
+              <UserNameCell
+                user={row.owner}
+                name={row.owner?.name}
+                subtitle={row.owner?.phone}
+              />
             ),
           },
           {

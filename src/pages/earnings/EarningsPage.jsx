@@ -13,6 +13,7 @@ import PageHeader from '../../components/common/PageHeader';
 import StatCard from '../../components/common/StatCard';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
+import { UserNameCell } from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -78,7 +79,12 @@ const EarningsPage = () => {
             dataIndex: 'toiletName',
             render: value => <span className="pnp-cell-strong">{value || '—'}</span>,
           },
-          { title: 'Owner', render: row => row.owner?.name || row.ownerId },
+          {
+            title: 'Owner',
+            render: row => (
+              <UserNameCell user={row.owner} name={row.owner?.name || row.ownerId} size={28} />
+            ),
+          },
           {
             title: 'Gross',
             dataIndex: 'grossAmount',

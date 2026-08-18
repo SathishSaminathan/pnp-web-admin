@@ -6,7 +6,7 @@ import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
 import BlockUserButton from '../../components/common/BlockUserButton';
-import UserAvatar from '../../components/common/UserAvatar';
+import { UserNameCell } from '../../components/common/UserAvatar';
 
 const UsersList = () => {
   const navigate = useNavigate();
@@ -53,12 +53,7 @@ const UsersList = () => {
           {
             title: 'User',
             dataIndex: 'name',
-            render: (value, row) => (
-              <div className="flex items-center gap-3">
-                <UserAvatar src={row.photoUrl} name={value} size={36} />
-                <span className="pnp-cell-strong">{value || '—'}</span>
-              </div>
-            ),
+            render: (value, row) => <UserNameCell user={row} name={value} />,
           },
           {
             title: 'Phone',

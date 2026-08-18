@@ -4,7 +4,7 @@ import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import StatusPill from '../../components/common/StatusPill';
-import UserAvatar from '../../components/common/UserAvatar';
+import { UserNameCell } from '../../components/common/UserAvatar';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -55,10 +55,11 @@ const HistoryList = () => {
           {
             title: 'Customer',
             render: row => (
-              <div className="flex items-center gap-2">
-                <UserAvatar src={row.user?.photoUrl} name={row.user?.name} size={28} />
-                <span>{row.user?.name || row.userId || '—'}</span>
-              </div>
+              <UserNameCell
+                user={row.user}
+                name={row.user?.name || row.userId}
+                size={28}
+              />
             ),
           },
           {

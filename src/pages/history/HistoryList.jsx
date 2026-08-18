@@ -37,7 +37,7 @@ const HistoryList = () => {
             setStatus(value);
             load(value);
           }}
-          options={['UPCOMING', 'ACTIVE', 'COMPLETED', 'CANCELLED'].map(value => ({ label: value, value }))}
+          options={['COMPLETED', 'CANCELLED'].map(value => ({ label: value === 'COMPLETED' ? 'Paid visit' : 'Cancelled', value }))}
         />
       </div>
       <DataTable
@@ -81,7 +81,7 @@ const HistoryList = () => {
             render: value => <StatusPill value={value} />,
           },
           {
-            title: 'Status',
+            title: 'Visit',
             dataIndex: 'bookingStatus',
             render: value => <StatusPill value={value} />,
           },

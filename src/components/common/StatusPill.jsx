@@ -9,16 +9,25 @@ const TONE_BY_VALUE = {
   COMPLETE: 'success',
   UPCOMING: 'info',
   ACTIVE: 'warning',
-  PENDING: 'warning',
+  PENDING: 'success',
   CANCELLED: 'danger',
   NO: 'muted',
   BLOCKED: 'danger',
-  ACTIVE: 'success',
+  FAILED: 'danger',
+};
+
+const LABEL_BY_VALUE = {
+  PAID: 'Paid',
+  SETTLED: 'Paid',
+  PENDING: 'Paid',
+  COMPLETED: 'Completed',
+  CANCELLED: 'Cancelled',
+  FAILED: 'Failed',
 };
 
 const StatusPill = ({ value, tone, children }) => {
-  const label = children ?? value ?? '—';
-  const key = String(value ?? label).toUpperCase();
+  const key = String(value ?? children ?? '').toUpperCase();
+  const label = children ?? LABEL_BY_VALUE[key] ?? value ?? '—';
   const resolved = tone || TONE_BY_VALUE[key] || 'muted';
 
   return (

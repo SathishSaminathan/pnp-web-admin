@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   CalendarOutlined,
-  ClockCircleOutlined,
   DollarCircleOutlined,
   FundOutlined,
   PercentageOutlined,
@@ -36,15 +35,15 @@ const EarningsPage = () => {
     { label: 'This week', value: earnings?.week, color: '#6366f1', icon: <RiseOutlined />, hint: '7 days' },
     { label: 'This month', value: earnings?.month, color: '#8b5cf6', icon: <FundOutlined />, hint: '30 days' },
     { label: 'Lifetime', value: earnings?.total, color: '#0ea5e9', icon: <TrophyOutlined />, hint: 'All time' },
-    { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Revenue' },
+    { label: 'Gross', value: earnings?.gross, color: '#10b981', icon: <DollarCircleOutlined />, hint: 'Paid visits' },
     { label: 'Platform fees', value: earnings?.fees, color: '#f59e0b', icon: <PercentageOutlined />, hint: 'Commission' },
-    { label: 'Net', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'To hosts' },
-    { label: 'Pending settlement', value: earnings?.pending, color: '#f97316', icon: <ClockCircleOutlined />, hint: 'Unpaid' },
+    { label: 'Net to hosts', value: earnings?.net, color: '#14b8a6', icon: <WalletOutlined />, hint: 'Paid' },
+    { label: 'Settled', value: earnings?.settled ?? earnings?.net, color: '#16a34a', icon: <WalletOutlined />, hint: 'Paid' },
   ];
 
   return (
     <div>
-      <PageHeader title="Earnings" description="Platform revenue and host settlement transactions." />
+      <PageHeader title="Earnings" description="Paid visit revenue and host payouts. Access is granted only after payment, so every transaction here is paid." />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {cards.map(card => (
           <StatCard
@@ -93,7 +92,7 @@ const EarningsPage = () => {
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
           },
           {
-            title: 'Settlement',
+            title: 'Status',
             dataIndex: 'settlementStatus',
             render: value => <StatusPill value={value} />,
           },

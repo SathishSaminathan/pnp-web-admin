@@ -30,9 +30,9 @@ const OwnersList = () => {
 
   useEffect(() => { load(); }, []);
 
-  const handleBlock = async (user, blocked) => {
-    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? 'Blocked by admin' : '' });
-    message.success(blocked ? 'Owner blocked' : 'Owner unblocked');
+  const handleBlock = async (user, blocked, reason = '') => {
+    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? reason || 'Blocked by admin' : '' });
+    message.success(blocked ? 'Owner blocked. A push was sent to their device.' : 'Owner unblocked. A push was sent to their device.');
     load(search);
     if (selectedOwner?.id === user.id) {
       setSelectedOwner({ ...selectedOwner, blocked });

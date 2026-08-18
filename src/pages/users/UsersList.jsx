@@ -25,9 +25,9 @@ const UsersList = () => {
 
   useEffect(() => { load(); }, []);
 
-  const handleBlock = async (user, blocked) => {
-    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? 'Blocked by admin' : '' });
-    message.success(blocked ? 'User blocked' : 'User unblocked');
+  const handleBlock = async (user, blocked, reason = '') => {
+    await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? reason || 'Blocked by admin' : '' });
+    message.success(blocked ? 'User blocked. A push was sent to their device.' : 'User unblocked. A push was sent to their device.');
     load(search);
   };
 

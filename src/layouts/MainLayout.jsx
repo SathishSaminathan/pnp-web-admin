@@ -101,6 +101,7 @@ const MainLayout = () => {
             children: [
                 { key: '/users', icon: <UserOutlined />, label: 'Users' },
                 { key: '/owners', icon: <TeamOutlined />, label: 'Owners' },
+                { key: '/push-notifications', icon: <BellOutlined />, label: 'Push notifications' },
             ],
         },
         {
@@ -179,7 +180,7 @@ const MainLayout = () => {
                     <Menu
                         theme={isDark ? 'dark' : 'light'}
                         mode="inline"
-                        selectedKeys={[location.pathname]}
+                        selectedKeys={[location.pathname === '/notifications' ? '/push-notifications' : location.pathname]}
                         items={sideMenu}
                         onClick={({ key }) => { navigate(key); if (isMobile) setMobileOpen(false); }}
                         style={{ background: 'transparent', borderRight: 0 }}
@@ -247,7 +248,7 @@ const MainLayout = () => {
                                 <div
                                     className="w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors"
                                     style={{ background: 'var(--input-bg)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
-                                    onClick={() => navigate('/notifications')}
+                                    onClick={() => navigate('/push-notifications')}
                                 >
                                     <BellOutlined className="text-base" />
                                 </div>

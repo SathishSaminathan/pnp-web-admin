@@ -15,6 +15,7 @@ const HistoryList = lazy(() => import('../pages/history/HistoryList'));
 const EarningsPage = lazy(() => import('../pages/earnings/EarningsPage'));
 const MasterDataPage = lazy(() => import('../pages/master/MasterDataPage'));
 const Settings = lazy(() => import('../pages/settings/Settings'));
+const SendPushPage = lazy(() => import('../pages/notifications/SendPushPage'));
 
 const PageLoader = () => (
     <div className="flex items-center justify-center min-h-[400px]">
@@ -54,6 +55,8 @@ const AppRoutes = () => {
                         <Route path="/history" element={<ProtectedPageRoute><HistoryList /></ProtectedPageRoute>} />
                         <Route path="/earnings" element={<ProtectedPageRoute><EarningsPage /></ProtectedPageRoute>} />
                         <Route path="/master-data" element={<ProtectedPageRoute><MasterDataPage /></ProtectedPageRoute>} />
+                        <Route path="/push-notifications" element={<ProtectedPageRoute><SendPushPage /></ProtectedPageRoute>} />
+                        <Route path="/notifications" element={<ProtectedPageRoute><SendPushPage /></ProtectedPageRoute>} />
                         <Route path="/settings" element={<ProtectedPageRoute><Settings /></ProtectedPageRoute>} />
                         <Route path="*" element={<NotFound />} />
                     </Route>

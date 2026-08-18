@@ -41,5 +41,7 @@ export const API_ROUTES = {
         REVIEWS: `${API_BASE}/admin/reviews`,
         MASTER: `${API_BASE}/admin/master`,
         MASTER_ITEM: (type, id) => `${API_BASE}/admin/master/${type}${id ? `/${id}` : ''}`,
+        PUSH_TEMPLATES: `${API_BASE}/admin/notifications/templates`,
+        PUSH_SEND: `${API_BASE}/admin/notifications/push`,
     },
 };

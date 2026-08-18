@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CalendarOutlined,
   DollarCircleOutlined,
@@ -8,27 +8,49 @@ import {
   TrophyOutlined,
   WalletOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import StatCard from '../../components/common/StatCard';
 import DataTable from '../../components/common/DataTable';
+import FilterBar from '../../components/common/FilterBar';
 import StatusPill from '../../components/common/StatusPill';
 import { UserNameCell } from '../../components/common/UserAvatar';
+import { useServerTable } from '../../hooks/useServerTable';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
+import { serverTablePagination } from '../../utils/serverTable';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
 const EarningsPage = () => {
   const [earnings, setEarnings] = useState(null);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const apiFn = useCallback((params, signal) => adminApi.transactions(params, { signal }), []);
+  const {
+    query,
+    data,
+    serverPagination,
+    loading,
+    updateFilters,
+    updatePage,
+  } = useServerTable(apiFn, {
+    page: 1,
+    limit: 10,
+    search: '',
+    settlementStatus: '',
+    paymentStatus: '',
+    fromDate: '',
+    toDate: '',
+  });
+
+  const { searchInput, onSearchChange, resetSearch } = useDebouncedSearch(updateFilters);
+  const hasActiveFilters = Boolean(
+    query.search || query.settlementStatus || query.paymentStatus || query.fromDate || query.toDate,
+  );
+  const dateRange = query.fromDate && query.toDate ? [dayjs(query.fromDate), dayjs(query.toDate)] : null;
 
   useEffect(() => {
-    Promise.all([adminApi.earnings(), adminApi.transactions()])
-      .then(([nextEarnings, txns]) => {
-        setEarnings(nextEarnings);
-        setItems(txns.items || []);
-      })
-      .finally(() => setLoading(false));
+    adminApi.earnings().then(setEarnings).catch(() => {});
   }, []);
 
   const cards = [
@@ -41,6 +63,29 @@ const EarningsPage = () => {
     { label: 'Visits', value: earnings?.visitCount, color: '#2563eb', icon: <WalletOutlined />, hint: 'Paid', count: true },
     { label: 'Listings', value: earnings?.listingCount, color: '#16a34a', icon: <WalletOutlined />, hint: 'Toilets', count: true },
   ];
+
+  const filters = useMemo(() => [
+    {
+      key: 'settlementStatus',
+      placeholder: 'Settlement',
+      value: query.settlementStatus,
+      onChange: value => updateFilters({ settlementStatus: value }),
+      options: [
+        { value: 'SETTLED', label: 'Settled' },
+        { value: 'FAILED', label: 'Failed' },
+      ],
+    },
+    {
+      key: 'paymentStatus',
+      placeholder: 'Payment',
+      value: query.paymentStatus,
+      onChange: value => updateFilters({ paymentStatus: value }),
+      options: [
+        { value: 'PAID', label: 'Paid' },
+        { value: 'FAILED', label: 'Failed' },
+      ],
+    },
+  ], [query.settlementStatus, query.paymentStatus, updateFilters]);
 
   return (
     <div>
@@ -63,11 +108,30 @@ const EarningsPage = () => {
           />
         ))}
       </div>
+      <FilterBar
+        search={searchInput}
+        searchPlaceholder="Search transaction, toilet, or owner"
+        onSearchChange={onSearchChange}
+        filters={filters}
+        dateRange={dateRange}
+        onDateRangeChange={dates => {
+          updateFilters({
+            fromDate: dates?.[0] ? dates[0].format('YYYY-MM-DD') : '',
+            toDate: dates?.[1] ? dates[1].format('YYYY-MM-DD') : '',
+          });
+        }}
+        hasActiveFilters={hasActiveFilters}
+        onClear={() => {
+          resetSearch();
+          updateFilters({ search: '', settlementStatus: '', paymentStatus: '', fromDate: '', toDate: '' });
+        }}
+      />
       <DataTable
         rowKey="id"
         loading={loading}
-        dataSource={items}
+        dataSource={data}
         scroll={{ x: 920 }}
+        pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Transaction',
@@ -102,6 +166,11 @@ const EarningsPage = () => {
             dataIndex: 'netAmount',
             align: 'right',
             render: value => <span className="pnp-cell-amount">{inr(value)}</span>,
+          },
+          {
+            title: 'Payment',
+            dataIndex: 'paymentStatus',
+            render: value => <StatusPill value={value} />,
           },
           {
             title: 'Status',

@@ -10,7 +10,8 @@ const DataTable = ({ wrapped = true, className = '', pagination, ...props }) => 
           ? false
           : {
               pageSize: 10,
-              showSizeChanger: false,
+              showSizeChanger: true,
+              pageSizeOptions: ['10', '20', '50'],
               showTotal: total => (
                 <span className="pnp-table-total">{total} records</span>
               ),

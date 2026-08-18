@@ -1,43 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Empty, Input, Space, message } from 'antd';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Button, Empty, Space, message } from 'antd';
 import { ShopOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
+import FilterBar from '../../components/common/FilterBar';
 import StatusPill from '../../components/common/StatusPill';
 import BlockUserButton from '../../components/common/BlockUserButton';
 import { DetailInfoDrawer } from '../../components/common/DetailInfoDrawer';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
 import UserAvatar, { UserNameCell } from '../../components/common/UserAvatar';
+import { useServerTable } from '../../hooks/useServerTable';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
+import { cityOptions, serverTablePagination } from '../../utils/serverTable';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
 const OwnersList = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [selectedOwner, setSelectedOwner] = useState(null);
   const [toilets, setToilets] = useState([]);
   const [toiletsLoading, setToiletsLoading] = useState(false);
   const [savingId, setSavingId] = useState('');
 
-  const load = async value => {
-    setLoading(true);
-    try {
-      const res = await adminApi.owners({ search: value || undefined });
-      setItems(res.items || []);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const apiFn = useCallback((params, signal) => adminApi.owners(params, { signal }), []);
+  const {
+    query,
+    data,
+    serverPagination,
+    responseMeta,
+    loading,
+    updateFilters,
+    updatePage,
+    refresh,
+  } = useServerTable(apiFn, {
+    page: 1,
+    limit: 10,
+    search: '',
+    blocked: '',
+    city: '',
+  });
 
-  useEffect(() => { load(); }, []);
+  const { searchInput, onSearchChange, resetSearch } = useDebouncedSearch(updateFilters);
+  const hasActiveFilters = Boolean(query.search || query.blocked || query.city);
 
   const handleBlock = async (user, blocked, reason = '') => {
     await adminApi.setUserBlocked(user.id, { blocked, reason: blocked ? reason || 'Blocked by admin' : '' });
     message.success(blocked ? 'Owner blocked. A push was sent to their device.' : 'Owner unblocked. A push was sent to their device.');
-    load(search);
+    refresh();
     if (selectedOwner?.id === user.id) {
       setSelectedOwner({ ...selectedOwner, blocked });
     }
@@ -48,7 +58,7 @@ const OwnersList = () => {
     setToilets(owner.listings || []);
     setToiletsLoading(true);
     try {
-      const res = await adminApi.listings({ ownerId: owner.id });
+      const res = await adminApi.listings({ ownerId: owner.id, limit: 100 });
       setToilets(res.items || owner.listings || []);
     } finally {
       setToiletsLoading(false);
@@ -61,7 +71,7 @@ const OwnersList = () => {
       const updated = await adminApi.setListingVerified(listing.id, { verified });
       message.success(verified ? 'Listing approved as verified. Owner was notified.' : 'Verification removed. Owner was notified.');
       setToilets(current => current.map(item => (item.id === listing.id ? { ...item, ...updated } : item)));
-      load(search);
+      refresh();
     } catch (error) {
       message.error(error?.response?.data?.message || error?.message || 'Could not update verification');
     } finally {
@@ -69,24 +79,47 @@ const OwnersList = () => {
     }
   };
 
+  const filters = useMemo(() => [
+    {
+      key: 'blocked',
+      placeholder: 'Access',
+      value: query.blocked,
+      onChange: value => updateFilters({ blocked: value }),
+      options: [
+        { value: 'false', label: 'Active' },
+        { value: 'true', label: 'Blocked' },
+      ],
+    },
+    {
+      key: 'city',
+      placeholder: 'City',
+      value: query.city,
+      onChange: value => updateFilters({ city: value }),
+      options: cityOptions(responseMeta?.cities),
+    },
+  ], [query.blocked, query.city, responseMeta?.cities, updateFilters]);
+
   return (
     <div>
       <PageHeader title="Owners" description="Use View toilets to see restrooms published by each host." />
-      <div style={{ marginBottom: 16 }} className="max-w-md">
-        <Input.Search
-          placeholder="Search owner"
-          allowClear
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          onSearch={load}
-        />
-      </div>
+      <FilterBar
+        search={searchInput}
+        searchPlaceholder="Search owner name, phone, or city"
+        onSearchChange={onSearchChange}
+        filters={filters}
+        hasActiveFilters={hasActiveFilters}
+        onClear={() => {
+          resetSearch();
+          updateFilters({ search: '', blocked: '', city: '' });
+        }}
+      />
       <DataTable
         rowKey="id"
         loading={loading}
-        dataSource={items}
+        dataSource={data}
         scroll={{ x: 1080 }}
         sticky
+        pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Owner',

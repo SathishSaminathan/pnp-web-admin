@@ -52,8 +52,24 @@ export function useServerTable(apiFn, initialQuery) {
       .current(cleanParams, signal)
       .then((res) => {
         if (signal.aborted) return;
-        setData(Array.isArray(res?.data) ? res.data : []);
-        setServerPagination(res?.meta?.pagination ?? null);
+        const rows = Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res?.items)
+            ? res.items
+            : [];
+        const pagination =
+          res?.meta?.pagination ??
+          (res && res.total != null
+            ? {
+                page: res.page,
+                limit: res.limit,
+                total: res.total,
+                totalRecords: res.total,
+                totalPages: res.totalPages,
+              }
+            : null);
+        setData(rows);
+        setServerPagination(pagination);
         setResponseMeta(res?.meta ?? null);
       })
       .catch((err) => {

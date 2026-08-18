@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Input } from 'antd';
+import React, { useCallback, useMemo } from 'react';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
+import FilterBar from '../../components/common/FilterBar';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import { UserNameCell } from '../../components/common/UserAvatar';
+import { useServerTable } from '../../hooks/useServerTable';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
+import { serverTablePagination } from '../../utils/serverTable';
 
 const formatDate = value => {
   if (!value) return '—';
@@ -12,47 +15,60 @@ const formatDate = value => {
 };
 
 const ReviewsList = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const apiFn = useCallback((params, signal) => adminApi.reviews(params, { signal }), []);
+  const {
+    query,
+    data,
+    serverPagination,
+    loading,
+    updateFilters,
+    updatePage,
+  } = useServerTable(apiFn, {
+    page: 1,
+    limit: 10,
+    search: '',
+    minRating: '',
+  });
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const res = await adminApi.reviews();
-      setItems(res.items || []);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { searchInput, onSearchChange, resetSearch } = useDebouncedSearch(updateFilters);
+  const hasActiveFilters = Boolean(query.search || query.minRating);
 
-  useEffect(() => { load(); }, []);
-
-  const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) return items;
-    return items.filter(item =>
-      [item.userName, item.toiletName, item.comment]
-        .some(value => String(value || '').toLowerCase().includes(query)),
-    );
-  }, [items, search]);
+  const filters = useMemo(() => [
+    {
+      key: 'minRating',
+      placeholder: 'Rating',
+      value: query.minRating,
+      onChange: value => updateFilters({ minRating: value }),
+      options: [
+        { value: '5', label: '5 stars' },
+        { value: '4', label: '4 and up' },
+        { value: '3', label: '3 and up' },
+        { value: '2', label: '2 and up' },
+        { value: '1', label: '1 and up' },
+      ],
+    },
+  ], [query.minRating, updateFilters]);
 
   return (
     <div>
       <PageHeader title="Reviews" description="Guest ratings and photos submitted after a paid visit." />
-      <div style={{ marginBottom: 16 }} className="max-w-md">
-        <Input.Search
-          placeholder="Search reviewer, toilet, or comment"
-          allowClear
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-      </div>
+      <FilterBar
+        search={searchInput}
+        searchPlaceholder="Search reviewer, toilet, or comment"
+        onSearchChange={onSearchChange}
+        filters={filters}
+        hasActiveFilters={hasActiveFilters}
+        onClear={() => {
+          resetSearch();
+          updateFilters({ search: '', minRating: '' });
+        }}
+      />
       <DataTable
         rowKey="id"
         loading={loading}
-        dataSource={filtered}
+        dataSource={data}
         scroll={{ x: 1100 }}
+        pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Photos',

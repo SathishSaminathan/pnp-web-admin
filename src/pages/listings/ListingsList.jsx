@@ -1,13 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Input, Select, Space, message } from 'antd';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Space, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
+import FilterBar from '../../components/common/FilterBar';
 import StatusPill from '../../components/common/StatusPill';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
 import { UserNameCell } from '../../components/common/UserAvatar';
+import { useServerTable } from '../../hooks/useServerTable';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
+import { cityOptions, serverTablePagination } from '../../utils/serverTable';
 
 const inr = value => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -15,35 +19,50 @@ const ListingsList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const ownerId = searchParams.get('ownerId') || '';
   const verifiedParam = searchParams.get('verified') || '';
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState('');
-  const [search, setSearch] = useState('');
+  const skipUrlSync = useRef(true);
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const res = await adminApi.listings({
-        ownerId: ownerId || undefined,
-        search: search || undefined,
-        verified: verifiedParam || undefined,
-      });
-      setItems(res.items || []);
-    } finally {
-      setLoading(false);
+  const apiFn = useCallback((params, signal) => adminApi.listings(params, { signal }), []);
+  const {
+    query,
+    data,
+    serverPagination,
+    responseMeta,
+    loading,
+    updateFilters,
+    updatePage,
+    refresh,
+  } = useServerTable(apiFn, {
+    page: 1,
+    limit: 10,
+    search: '',
+    ownerId,
+    verified: verifiedParam,
+    availability: '',
+    category: '',
+    city: '',
+    enabled: '',
+    ownerBlocked: '',
+  });
+
+  const { searchInput, onSearchChange, resetSearch } = useDebouncedSearch(updateFilters);
+
+  useEffect(() => {
+    if (skipUrlSync.current) {
+      skipUrlSync.current = false;
+      return;
     }
-  };
+    updateFilters({ ownerId, verified: verifiedParam });
+  }, [ownerId, verifiedParam, updateFilters]);
 
-  useEffect(() => { load(); }, [ownerId, verifiedParam]);
-
-  const ownerName = useMemo(() => items[0]?.owner?.name, [items]);
+  const ownerName = useMemo(() => data[0]?.owner?.name, [data]);
 
   const handleVerified = async (listing, verified) => {
     setSavingId(listing.id);
     try {
       await adminApi.setListingVerified(listing.id, { verified });
       message.success(verified ? 'Listing approved as verified. Owner was notified.' : 'Verification removed. Owner was notified.');
-      await load();
+      refresh();
     } catch (error) {
       message.error(error?.response?.data?.message || error?.message || 'Could not update verification');
     } finally {
@@ -51,12 +70,70 @@ const ListingsList = () => {
     }
   };
 
-  const setVerifiedFilter = value => {
-    const next = {};
-    if (ownerId) next.ownerId = ownerId;
-    if (value) next.verified = value;
-    setSearchParams(next);
+  const setUrlFilters = next => {
+    const params = {};
+    if (next.ownerId) params.ownerId = next.ownerId;
+    if (next.verified) params.verified = next.verified;
+    setSearchParams(params);
   };
+
+  const hasActiveFilters = Boolean(
+    query.search || query.verified || query.availability || query.category || query.city || query.enabled || query.ownerBlocked,
+  );
+
+  const filters = useMemo(() => [
+    {
+      key: 'verified',
+      placeholder: 'Verification',
+      value: query.verified,
+      onChange: value => setUrlFilters({ ownerId: query.ownerId, verified: value }),
+      options: [
+        { value: 'pending', label: 'Pending approval' },
+        { value: 'verified', label: 'Verified' },
+      ],
+    },
+    {
+      key: 'availability',
+      placeholder: 'Availability',
+      value: query.availability,
+      onChange: value => updateFilters({ availability: value }),
+      options: (responseMeta?.availability || []).map(value => ({ value, label: String(value).replace(/_/g, ' ') })),
+    },
+    {
+      key: 'category',
+      placeholder: 'Category',
+      value: query.category,
+      onChange: value => updateFilters({ category: value }),
+      options: (responseMeta?.categories || []).map(value => ({ value, label: value })),
+    },
+    {
+      key: 'city',
+      placeholder: 'City',
+      value: query.city,
+      onChange: value => updateFilters({ city: value }),
+      options: cityOptions(responseMeta?.cities),
+    },
+    {
+      key: 'enabled',
+      placeholder: 'Listing status',
+      value: query.enabled,
+      onChange: value => updateFilters({ enabled: value }),
+      options: [
+        { value: 'true', label: 'Enabled' },
+        { value: 'false', label: 'Disabled' },
+      ],
+    },
+    {
+      key: 'ownerBlocked',
+      placeholder: 'Owner access',
+      value: query.ownerBlocked,
+      onChange: value => updateFilters({ ownerBlocked: value }),
+      options: [
+        { value: 'false', label: 'Owner active' },
+        { value: 'true', label: 'Owner blocked' },
+      ],
+    },
+  ], [query.verified, query.ownerId, query.availability, query.category, query.city, query.enabled, query.ownerBlocked, responseMeta, updateFilters]);
 
   return (
     <div>
@@ -71,35 +148,37 @@ const ListingsList = () => {
           ownerId
             ? {
                 label: 'All toilets',
-                onClick: () => setSearchParams(verifiedParam ? { verified: verifiedParam } : {}),
+                onClick: () => setUrlFilters({ verified: query.verified }),
               }
             : undefined
         }
       />
-      <div style={{ marginBottom: 16 }} className="flex flex-col sm:flex-row gap-3 max-w-2xl">
-        <Input.Search
-          placeholder="Search toilet, owner, or city"
-          allowClear
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          onSearch={load}
-        />
-        <Select
-          value={verifiedParam || 'all'}
-          onChange={value => setVerifiedFilter(value === 'all' ? '' : value)}
-          style={{ width: 200 }}
-          options={[
-            { value: 'all', label: 'All verification' },
-            { value: 'pending', label: 'Pending approval' },
-            { value: 'verified', label: 'Verified' },
-          ]}
-        />
-      </div>
+      <FilterBar
+        search={searchInput}
+        searchPlaceholder="Search toilet, owner, or city"
+        onSearchChange={onSearchChange}
+        filters={filters}
+        hasActiveFilters={hasActiveFilters}
+        onClear={() => {
+          resetSearch();
+          updateFilters({
+            search: '',
+            verified: '',
+            availability: '',
+            category: '',
+            city: '',
+            enabled: '',
+            ownerBlocked: '',
+          });
+          setUrlFilters({ ownerId: query.ownerId });
+        }}
+      />
       <DataTable
         rowKey="id"
         loading={loading}
-        dataSource={items}
+        dataSource={data}
         scroll={{ x: 1280 }}
+        pagination={serverTablePagination(query, serverPagination, updatePage)}
         columns={[
           {
             title: 'Photos',

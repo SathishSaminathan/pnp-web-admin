@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Form, Input, InputNumber, Modal, Popconfirm, Switch, Tabs, Tag, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
+import FilterBar from '../../components/common/FilterBar';
+import { useServerTable } from '../../hooks/useServerTable';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
+import { serverTablePagination } from '../../utils/serverTable';
 
 const TYPES = [
   { key: 'categories', label: 'Categories' },
@@ -14,28 +18,39 @@ const TYPES = [
 const emptyForm = { value: '', label: '', color: '#16A34A', bg: '#F0FDF4', active: true, sortOrder: 1 };
 
 const MasterDataPage = () => {
-  const [master, setMaster] = useState({ categories: [], availability: [], facilities: [] });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState('categories');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form] = Form.useForm();
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      setMaster(await adminApi.master());
-    } finally {
-      setLoading(false);
-    }
-  };
+  const apiFn = useCallback(async (params, signal) => {
+    const { type, ...rest } = params;
+    return adminApi.masterType(type || 'categories', rest, { signal });
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  const {
+    query,
+    data,
+    serverPagination,
+    loading,
+    updateFilters,
+    updatePage,
+    refresh,
+  } = useServerTable(apiFn, {
+    page: 1,
+    limit: 10,
+    search: '',
+    active: '',
+    type: 'categories',
+  });
+
+  const { searchInput, onSearchChange, resetSearch } = useDebouncedSearch(updateFilters);
+  const hasActiveFilters = Boolean(query.search || query.active);
 
   const openCreate = () => {
     setEditing(null);
-    form.setFieldsValue({ ...emptyForm, sortOrder: (master[tab] || []).length + 1 });
+    form.setFieldsValue({ ...emptyForm, sortOrder: (serverPagination?.total || data.length) + 1 });
     setModalOpen(true);
   };
 
@@ -56,7 +71,7 @@ const MasterDataPage = () => {
         message.success('Added');
       }
       setModalOpen(false);
-      await load();
+      refresh();
     } catch (error) {
       message.error(error?.response?.data?.message || error?.message || 'Could not save');
     } finally {
@@ -67,8 +82,27 @@ const MasterDataPage = () => {
   const handleDelete = async record => {
     await adminApi.deleteMasterItem(tab, record.id);
     message.success('Removed');
-    load();
+    refresh();
   };
+
+  const handleTabChange = key => {
+    setTab(key);
+    resetSearch();
+    updateFilters({ type: key, search: '', active: '' });
+  };
+
+  const filters = useMemo(() => [
+    {
+      key: 'active',
+      placeholder: 'Status',
+      value: query.active,
+      onChange: value => updateFilters({ active: value }),
+      options: [
+        { value: 'true', label: 'Active' },
+        { value: 'false', label: 'Hidden' },
+      ],
+    },
+  ], [query.active, updateFilters]);
 
   const columns = [
     { title: 'Label', dataIndex: 'label', render: value => <span className="pnp-cell-strong">{value}</span> },
@@ -113,8 +147,25 @@ const MasterDataPage = () => {
         description="Categories, availability, and facilities used by the mobile listing form and discovery filters."
         primaryAction={{ label: 'Add option', onClick: openCreate, props: { icon: <PlusOutlined /> } }}
       />
-      <Tabs activeKey={tab} onChange={setTab} items={TYPES.map(item => ({ key: item.key, label: item.label }))} />
-      <DataTable rowKey="id" loading={loading} dataSource={master[tab] || []} columns={columns} />
+      <Tabs activeKey={tab} onChange={handleTabChange} items={TYPES.map(item => ({ key: item.key, label: item.label }))} />
+      <FilterBar
+        search={searchInput}
+        searchPlaceholder="Search label or value"
+        onSearchChange={onSearchChange}
+        filters={filters}
+        hasActiveFilters={hasActiveFilters}
+        onClear={() => {
+          resetSearch();
+          updateFilters({ search: '', active: '' });
+        }}
+      />
+      <DataTable
+        rowKey="id"
+        loading={loading}
+        dataSource={data}
+        columns={columns}
+        pagination={serverTablePagination(query, serverPagination, updatePage)}
+      />
 
       <Modal
         title={editing ? 'Edit option' : 'Add option'}

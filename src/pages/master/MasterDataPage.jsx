@@ -15,6 +15,15 @@ const TYPES = [
   { key: 'facilities', label: 'Facilities' },
 ];
 
+const LANGUAGES = [
+  { code: 'ta', label: 'Tamil' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'te', label: 'Telugu' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+  { code: 'ar', label: 'Arabic' },
+];
+
 const emptyForm = { value: '', label: '', color: '#16A34A', bg: '#F0FDF4', active: true, sortOrder: 1 };
 
 const MasterDataPage = () => {
@@ -56,7 +65,8 @@ const MasterDataPage = () => {
 
   const openEdit = record => {
     setEditing(record);
-    form.setFieldsValue(record);
+    form.resetFields();
+    form.setFieldsValue({ icon: '', labels: {}, ...record });
     setModalOpen(true);
   };
 
@@ -193,6 +203,21 @@ const MasterDataPage = () => {
           <Form.Item name="active" label="Active" valuePropName="checked">
             <Switch />
           </Form.Item>
+          {tab === 'facilities' ? (
+            <Form.Item
+              name="icon"
+              label="Icon"
+              extra="A Lucide icon name, e.g. droplets, lock, baby. The app shows a tick if it does not know the name."
+            >
+              <Input placeholder="droplets" />
+            </Form.Item>
+          ) : null}
+          <div className="mb-2 text-sm font-medium">Translations (optional)</div>
+          {LANGUAGES.map(lang => (
+            <Form.Item key={lang.code} name={['labels', lang.code]} label={lang.label}>
+              <Input placeholder={`Label in ${lang.label}`} />
+            </Form.Item>
+          ))}
           {tab === 'availability' ? (
             <>
               <Form.Item name="color" label="Text color">

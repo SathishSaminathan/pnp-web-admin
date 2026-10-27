@@ -122,6 +122,7 @@ const MainLayout = () => {
             label: 'Administration',
             children: [
                 { key: '/settings', icon: <SafetyCertificateOutlined />, label: 'Settings' },
+                { key: '/app-settings', icon: <SettingOutlined />, label: 'App settings' },
                 { key: '/master-data', icon: <DatabaseOutlined />, label: 'Master data' },
             ],
         },

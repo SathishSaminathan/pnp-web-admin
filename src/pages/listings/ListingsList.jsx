@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Space, message } from 'antd';
+import { Button, Space, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { adminApi } from '../../api/modules/admin';
 import PageHeader from '../../components/common/PageHeader';
@@ -8,6 +8,7 @@ import FilterBar from '../../components/common/FilterBar';
 import StatusPill from '../../components/common/StatusPill';
 import ListingPhotoStrip from '../../components/common/ListingPhotoStrip';
 import VerifyListingButton from '../../components/common/VerifyListingButton';
+import EditListingModal from '../../components/common/EditListingModal';
 import { UserNameCell } from '../../components/common/UserAvatar';
 import { useServerTable } from '../../hooks/useServerTable';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
@@ -20,6 +21,7 @@ const ListingsList = () => {
   const ownerId = searchParams.get('ownerId') || '';
   const verifiedParam = searchParams.get('verified') || '';
   const [savingId, setSavingId] = useState('');
+  const [editing, setEditing] = useState(null);
   const skipUrlSync = useRef(true);
 
   const apiFn = useCallback((params, signal) => adminApi.listings(params, { signal }), []);
@@ -250,10 +252,13 @@ const ListingsList = () => {
           {
             title: 'Actions',
             key: 'actions',
-            width: 120,
+            width: 190,
             fixed: 'right',
             render: row => (
               <Space size={8} onClick={event => event.stopPropagation()}>
+                <Button size="small" onClick={() => setEditing(row)}>
+                  Edit
+                </Button>
                 <VerifyListingButton
                   listing={row}
                   loading={savingId === row.id}
@@ -264,6 +269,7 @@ const ListingsList = () => {
           },
         ]}
       />
+      <EditListingModal listing={editing} onClose={() => setEditing(null)} onSaved={refresh} />
     </div>
   );
 };

@@ -15,6 +15,7 @@ const HistoryList = lazy(() => import('../pages/history/HistoryList'));
 const ReviewsList = lazy(() => import('../pages/reviews/ReviewsList'));
 const EarningsPage = lazy(() => import('../pages/earnings/EarningsPage'));
 const MasterDataPage = lazy(() => import('../pages/master/MasterDataPage'));
+const AppSettingsPage = lazy(() => import('../pages/app-settings/AppSettingsPage'));
 const Settings = lazy(() => import('../pages/settings/Settings'));
 const SendPushPage = lazy(() => import('../pages/notifications/SendPushPage'));
 
@@ -52,6 +53,7 @@ const AppRoutes = () => {
                         <Route path="/history" element={<ProtectedPageRoute><HistoryList /></ProtectedPageRoute>} />
                         <Route path="/reviews" element={<ProtectedPageRoute><ReviewsList /></ProtectedPageRoute>} />
                         <Route path="/earnings" element={<ProtectedPageRoute><EarningsPage /></ProtectedPageRoute>} />
+                        <Route path="/app-settings" element={<ProtectedPageRoute><AppSettingsPage /></ProtectedPageRoute>} />
                         <Route path="/master-data" element={<ProtectedPageRoute><MasterDataPage /></ProtectedPageRoute>} />
                         <Route path="/push-notifications" element={<ProtectedPageRoute><SendPushPage /></ProtectedPageRoute>} />
                         <Route path="/notifications" element={<ProtectedPageRoute><SendPushPage /></ProtectedPageRoute>} />
